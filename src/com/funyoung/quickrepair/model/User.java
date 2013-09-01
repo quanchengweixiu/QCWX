@@ -164,4 +164,10 @@ public class User {
         bundle.putString(KEY_AVATAR, mAvatarUrl);
         return bundle;
     }
+//
+//    public static User fromBundle(Bundle bundle) {
+//        if (null != bundle) {
+//            User user = new User()
+//        }
+//    }
 }

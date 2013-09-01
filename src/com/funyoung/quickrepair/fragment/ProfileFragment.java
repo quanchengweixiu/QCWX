@@ -58,6 +58,10 @@ public class ProfileFragment extends BaseFragment {
             initViews(inflater);
         }
 
+        Bundle args = getArguments();
+        if (null != args) {
+
+        }
         performLoginTask();
 
         return mRootView;
