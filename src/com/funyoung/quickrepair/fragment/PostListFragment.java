@@ -2,8 +2,10 @@
 package com.funyoung.quickrepair.fragment;
 
 import android.app.ListFragment;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,8 +51,8 @@ public class PostListFragment extends ListFragment implements
         adapter = new SimpleAdapter(getActivity(),
                 itemData,
                 R.layout.gridview_item_post,
-                new String[] { "img", "label", "time", "description", "price" },
-                new int[] { R.id.img, R.id.label, R.id.time, R.id.description, R.id.price });
+                new String[] { "img", "label", "time", "description", "price", "status" },
+                new int[] { R.id.img, R.id.label, R.id.time, R.id.description, R.id.price, R.id.status });
         setListAdapter(adapter);
 
         /**
@@ -158,13 +160,19 @@ public class PostListFragment extends ListFragment implements
                 item = new HashMap<String, Object>();
                 item.put("img", MainActivity.images[post.category]);
                 item.put("label", post.area);
-                item.put("time", post.createTime);
+                item.put("time", formatDate(getActivity(), post.createTime));
                 item.put("description", post.description);
-                item.put("price", getString(R.string.post_item_price));
+                item.put("price", getString(R.string.post_item_price, post.getPrice()));
+                item.put("status", getString(R.string.post_item_status, post.getStatus()));
                 itemData.add(item);
             }
         }
         adapter.notifyDataSetChanged();
+    }
+
+    private static String formatDate(Context context, long time) {
+        return context.getString(R.string.post_item_time, DateUtils.formatDateTime(context, time,
+                DateUtils.FORMAT_NUMERIC_DATE | DateUtils.FORMAT_SHOW_TIME));
     }
 
     private PullToRefreshAttacher mPullToRefreshAttacher;

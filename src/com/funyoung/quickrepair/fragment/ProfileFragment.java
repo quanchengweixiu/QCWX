@@ -58,7 +58,7 @@ public class ProfileFragment extends BaseFragment {
         if (null != args) {
             mUser = User.fromBundle(args);
         }
-        
+
         if (null != mRootView) {
             initViews(inflater);
         }

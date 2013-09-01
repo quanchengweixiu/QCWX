@@ -81,8 +81,9 @@
     <string name="preferences_vibrate_summary">新通知，信息响铃同时震动提醒</string>
     <string name="list_posts_succeed">读取工单列表完成</string>
     <string name="list_posts_fail">读取工单列表遇到错误</string>
-    <string name="post_item_price">花费未知</string>
+    <string name="post_item_price">花费:%1$s</string>
     <string name="post_item_description">详细描述</string>
     <string name="post_item_title">标题</string>
-    <string name="post_item_time">刚刚</string>
+    <string name="post_item_time">发布时间 %1$s</string>
+    <string name="post_item_status">订单状态:%1$s</string>
 </resources>

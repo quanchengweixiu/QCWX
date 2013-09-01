@@ -46,6 +46,8 @@ public class Post {
     // remote attribute
     public long createTime;
     public long updateTime;
+    public String price;
+    public int status;
 
     public static ArrayList<Post> parseListResult(String result) {
         ArrayList<Post> postList = new ArrayList<Post>();
@@ -80,7 +82,18 @@ public class Post {
             post.category = obj.optInt("categoryid");
             post.subCategory = obj.optInt("sub_categoryid");
             post.description = obj.optString("description");
+            post.status = obj.optInt("status");
+            post.createTime = obj.optLong("dateline");
         }
         return post;
+    }
+
+    // todo: orgnaize text.
+    public String getPrice() {
+        return TextUtils.isEmpty(price) ? "未知" : price;
+    }
+
+    public String getStatus() {
+        return "未被抢";
     }
 }
