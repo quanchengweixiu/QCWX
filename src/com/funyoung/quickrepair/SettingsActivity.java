@@ -26,13 +26,16 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 
+import com.baidu.android.common.logging.Log;
 import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
 import com.baidu.push.Utils;
 import com.funyoung.qcwx.R;
 import com.funyoung.quickrepair.model.User;
+import com.funyoung.quickrepair.transport.UsersClient;
 
 public class SettingsActivity extends PreferenceActivity implements Preference.OnPreferenceChangeListener {
+    private static final String TAG = "SettingsActivity";
     private SharedPreferences mPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,5 +127,22 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
                 + "\n\tUser ID: " + clientId + "\n\t";
 
         return content;
+    }
+
+    public static void checkAndUploadChannelInfo(Context context) {
+        final User user = getLoginUser(context);
+        if (null != user) {
+            long uid = user.getUid();
+            if (uid > 0) {
+                SharedPreferences sp = PreferenceManager
+                        .getDefaultSharedPreferences(context);
+                String channelId = sp.getString("channel_id", "");
+                String  clientId = sp.getString("user_id", "");
+                if (!UsersClient.insertChannel(context, channelId, clientId, uid)) {
+                    Log.e(TAG, "checkAndUploadChannelInfo, failed to upload, channelId = "
+                            + channelId + ", clientId = " + clientId + ", uid = " + uid);
+                }
+            }
+        }
     }
 }

@@ -40,10 +40,13 @@ public class PushMessageReceiver extends BroadcastReceiver {
 			//消息的用户自定义内容读取方式
 			Log.i(TAG, "onMessage: " + message);
 
+            String targetUri = intent.getExtras().getString(Utils.EXTRA_TARGET_URI);
+
 			//用户在此自定义处理消息,以下代码为demo界面展示用
 			Intent responseIntent = null;
 			responseIntent = new Intent(Utils.ACTION_MESSAGE);
 			responseIntent.putExtra(Utils.EXTRA_MESSAGE, message);
+            responseIntent.putExtra(Utils.EXTRA_TARGET_URI, targetUri);
 			responseIntent.setClass(context, MainActivity.class);
 			responseIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			context.startActivity(responseIntent);

@@ -123,6 +123,7 @@ public final class UsersClient extends HttpRequestExecutor {
         private static final String SEND_CODE = "sendCode";
         private static final String LOGIN = "login";
         private static final String GET_PROFILE = "getUserInfo";
+        private static final String INSERT_CHANNEL = "insertChannelInfo";
     }
 
     public  String sendCode(String mobile) throws IOException, ApiException {
@@ -157,6 +158,16 @@ public final class UsersClient extends HttpRequestExecutor {
         HttpRequestBase request = new HttpRequestBuilder(HttpRequestBuilder.POST,
                 MODULE, Method.GET_PROFILE)
                 .parameter(API_PARAM_USER_ID, String.valueOf(uid))
+                .create();
+        return doRequest(request);
+    }
+
+    public  String insertChannel(String channelId, String clientId, long uid) throws IOException, ApiException {
+        HttpRequestBase request = new HttpRequestBuilder(HttpRequestBuilder.POST,
+                MODULE, Method.INSERT_CHANNEL)
+                .parameter(API_PARAM_USER_ID, String.valueOf(uid))
+                .parameter("channel_id", channelId)
+                .parameter("user_id", clientId)
                 .create();
         return doRequest(request);
     }
@@ -223,4 +234,26 @@ public final class UsersClient extends HttpRequestExecutor {
         }
         return null;
     }
+
+    public static boolean insertChannel(Context context, String channelId, String clientId, final long uid) {
+        UsersClient ac = new UsersClient(context, SimpleHttpClient.get());
+        Exception exception = null;
+        try {
+            String result = ac.insertChannel(channelId, clientId, uid);
+            return CommonUtils.parseBooleanResult(result);
+        } catch (ClientProtocolException e) {
+            exception = e;
+            e.printStackTrace();
+        } catch (IOException e) {
+            exception = e;
+            e.printStackTrace();
+        } catch (Exception e) {
+            exception = e;
+            e.printStackTrace();
+        } finally {
+            postCheckApiException(context, exception);
+        }
+        return false;
+    }
+
 }

@@ -20,11 +20,13 @@ import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.NotificationManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -240,6 +242,7 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.activity_main_home);
 
         schedule();
+        (mTask = new CheckForUpdatesTask()).execute();
 
         // The attacher should always be created in the Activity's onCreate
         mPullToRefreshAttacher = PullToRefreshAttacher.get(this);
@@ -529,6 +532,9 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (mTask != null && mTask.getStatus() == AsyncTask.Status.RUNNING) {
+            mTask.cancel(true);
+        }
         FragmentFactory.getInstance(this).onDestroy();
     }
 
@@ -644,5 +650,102 @@ public class MainActivity extends FragmentActivity {
 //            infoText.setText(content);
 //            infoText.invalidate();
 //        }
+    }
+
+    private CheckForUpdatesTask mTask;
+    private class CheckForUpdatesTask extends AsyncTask<Void, Object, Void> {
+        private SharedPreferences mPreferences;
+//        private NotificationManager mManager;
+
+        @Override
+        public void onPreExecute() {
+            mPreferences = getSharedPreferences(Preferences.NAME, MODE_PRIVATE);
+//            mManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        }
+
+        public Void doInBackground(Void... params) {
+//            final String channelid = mPreferences.getString("channel_id", "");
+//            final String clientId = mPreferences.getString("user_id", "");
+            SettingsActivity.checkAndUploadChannelInfo(MainActivity.this);
+
+//            final UserDatabase helper = new UserDatabase(CheckUpdateService.this);
+//            final SQLiteDatabase database = helper.getWritableDatabase();
+//
+//            Cursor cursor = null;
+//            try {
+//                cursor = database.query(UserDatabase.TABLE_USERS,
+//                        new String[] { UserDatabase._ID, UserDatabase.COLUMN_NSID,
+//                        UserDatabase.COLUMN_REALNAME, UserDatabase.COLUMN_LAST_UPDATE },
+//                        null, null, null, null, null);
+//
+//                int idIndex = cursor.getColumnIndexOrThrow(UserDatabase._ID);
+//                int realNameIndex = cursor.getColumnIndexOrThrow(UserDatabase.COLUMN_REALNAME);
+//                int nsidIndex = cursor.getColumnIndexOrThrow(UserDatabase.COLUMN_NSID);
+//                int lastUpdateIndex = cursor.getColumnIndexOrThrow(UserDatabase.COLUMN_LAST_UPDATE);
+//
+//                final Flickr flickr = Flickr.get();
+
+//                final Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+//                final Calendar reference = Calendar.getInstance();
+//
+//                while (!isCancelled() && cursor.moveToNext()) {
+//                    final String nsid = cursor.getString(nsidIndex);
+//                    calendar.setTimeInMillis(cursor.getLong(lastUpdateIndex));
+//
+//                    reference.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+//                            calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY),
+//                            calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
+//
+//                    if (flickr.hasUpdates(Flickr.User.fromId(nsid), reference)) {
+//                        publishProgress(nsid, cursor.getString(realNameIndex),
+//                                cursor.getInt(idIndex));
+//                    }
+//                }
+//
+//                final ContentValues values = new ContentValues();
+//                values.put(UserDatabase.COLUMN_LAST_UPDATE, System.currentTimeMillis());
+//
+//                database.update(UserDatabase.TABLE_USERS, values, null, null);
+//            } finally {
+//                if (cursor != null) cursor.close();
+//                database.close();
+//            }
+
+            return null;
+        }
+
+        @Override
+        public void onProgressUpdate(Object... values) {
+            if (mPreferences.getBoolean(Preferences.KEY_ENABLE_NOTIFICATIONS, true)) {
+                final Integer id = (Integer) values[2];
+//                final Intent intent = new Intent(PhotostreamActivity.ACTION);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                intent.putExtra(PhotostreamActivity.EXTRA_NOTIFICATION, id);
+//                intent.putExtra(PhotostreamActivity.EXTRA_NSID, values[0].toString());
+//
+//                Notification notification = new Notification(R.drawable.stat_notify,
+//                        getString(R.string.notification_new_photos, values[1]),
+//                        System.currentTimeMillis());
+//                notification.setLatestEventInfo(CheckUpdateService.this,
+//                        getString(R.string.notification_title),
+//                        getString(R.string.notification_contact_has_new_photos, values[1]),
+//                        PendingIntent.getActivity(CheckUpdateService.this, 0, intent,
+//                                PendingIntent.FLAG_CANCEL_CURRENT));
+
+                if (mPreferences.getBoolean(Preferences.KEY_VIBRATE, false)) {
+//                    notification.defaults |= Notification.DEFAULT_VIBRATE;
+                }
+
+                String ringtoneUri = mPreferences.getString(Preferences.KEY_RINGTONE, null);
+//                notification.sound = TextUtils.isEmpty(ringtoneUri) ? null : Uri.parse(ringtoneUri);
+
+//                mManager.notify(id, notification);
+            }
+        }
+
+        @Override
+        public void onPostExecute(Void aVoid) {
+//            stopSelf();
+        }
     }
 }

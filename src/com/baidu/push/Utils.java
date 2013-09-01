@@ -19,6 +19,7 @@ public class Utils {
 	public static final String ACTION_SHOW_MESSAGE = "bccsclient.action.SHOW_MESSAGE";
 	protected static final String EXTRA_ACCESS_TOKEN = "access_token";
 	public static final String EXTRA_MESSAGE = "message";
+    public static final String EXTRA_TARGET_URI = "targetUri";
 	
 	// 获取AppKey
     public static String getMetaValue(Context context, String metaKey) {
