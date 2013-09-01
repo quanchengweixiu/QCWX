@@ -19,7 +19,7 @@ import java.util.HashMap;
 public class ImageFragment extends Fragment {
     private View rootView;
     View.OnClickListener clickListener;
-
+    AdapterView.OnItemClickListener itemClickListener;
 
     String[] labels;
 
@@ -34,6 +34,10 @@ public class ImageFragment extends Fragment {
 
     public void setClickListener(View.OnClickListener clickListener) {
         this.clickListener = clickListener;
+    }
+
+    public void setItemClickListener(AdapterView.OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
     }
 
     private void initMainCategory() {
@@ -57,20 +61,21 @@ public class ImageFragment extends Fragment {
                 new int[] { R.id.img, R.id.label });
 
         gridView.setAdapter(adapter);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                showSubCategory(i);
-//                ((MainActivity)getActivity()).startPost(i, labels[i]);
-            }
-        });
+        gridView.setOnItemClickListener(itemClickListener);
+//        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                showSubCategory(i);
+////                ((MainActivity)getActivity()).startPost(i, labels[i]);
+//            }
+//        });
     }
 
-    private void showSubCategory(int i) {
+//    private void showSubCategory(int i) {
 //        mMainId = i;
 //        String[] subLabels = getResources().getStringArray(MainActivity.subLabelArray[mMainId]);
 //        mSubCategory.clear();
 //        mSubCategory.addAll(Arrays.asList(subLabels));
 //        adapter.notifyDataSetChanged();
-    }
+//    }
 }

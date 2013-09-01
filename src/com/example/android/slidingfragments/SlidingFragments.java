@@ -27,8 +27,10 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 
 import com.funyoung.qcwx.R;
+import com.funyoung.quickrepair.MainActivity;
 import com.funyoung.quickrepair.fragment.ImageFragment;
 import com.funyoung.quickrepair.fragment.TextFragment;
 import com.funyoung.view.OnTextFragmentAnimationEndListener;
@@ -71,16 +73,33 @@ public class SlidingFragments extends Activity implements
 
         mImageFragment = (ImageFragment) getFragmentManager().findFragmentById(R.id.move_fragment);
         mTextFragment = new TextFragment();
+        mTextFragment.setArguments(0, null);
 
         getFragmentManager().addOnBackStackChangedListener(this);
 
-        mImageFragment.setClickListener(mClickListener);
+//        mImageFragment.setClickListener(mClickListener);
+        mImageFragment.setItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                showSubCategory(i);
+//                ((MainActivity)getActivity()).startPost(i, labels[i]);
+            }
+        });
+
         mTextFragment.setClickListener(mClickListener);
         mTextFragment.setOnTextFragmentAnimationEnd(this);
         mDarkHoverView.setOnClickListener(mClickListener);
 
     }
 
+    private void showSubCategory(int i) {
+        mTextFragment.updateArgs(i, null);
+//        mMainId = i;
+//        String[] subLabels = getResources().getStringArray(MainActivity.subLabelArray[mMainId]);
+//        mSubCategory.clear();
+//        mSubCategory.addAll(Arrays.asList(subLabels));
+//        adapter.notifyDataSetChanged();
+    }
     View.OnClickListener mClickListener = new View.OnClickListener () {
         @Override
         public void onClick(View view) {

@@ -22,6 +22,7 @@ import java.util.Arrays;
 public class TextFragment extends Fragment {
     public static final String ARG_CAT_ID = "ARG_CAT_ID";
     public static final String ARG_CAT_LABEL = "ARG_CAT_LABEL";
+    private static final String DUMB_LABEL = "NA";
 
     View.OnClickListener clickListener;
     OnTextFragmentAnimationEndListener mListener;
@@ -39,7 +40,7 @@ public class TextFragment extends Fragment {
         Bundle bundle = getArguments();
         if (null != bundle) {
             mMainId = bundle.getInt(ARG_CAT_ID, 0);
-            mMainLabel = bundle.getString(ARG_CAT_LABEL, "NA");
+            mMainLabel = bundle.getString(ARG_CAT_LABEL, DUMB_LABEL);
         }
         initSubCategory();
         return rootView;
@@ -97,4 +98,19 @@ public class TextFragment extends Fragment {
         });
     }
 
+    public void setArguments(int id, String label) {
+        Bundle args = new Bundle();
+        args.putInt(ARG_CAT_ID, id);
+        args.putString(ARG_CAT_LABEL, null == label ? DUMB_LABEL : label);
+        setArguments(args);
+    }
+
+    public void updateArgs(int id, String label) {
+        mMainId = id;
+        mMainLabel = null == label ? DUMB_LABEL : label;
+        String[] subLabels = getResources().getStringArray(MainActivity.subLabelArray[mMainId]);
+        mSubCategory.clear();
+        mSubCategory.addAll(Arrays.asList(subLabels));
+        adapter.notifyDataSetChanged();
+    }
 }
