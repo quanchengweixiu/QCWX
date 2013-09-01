@@ -21,6 +21,7 @@
         <activity
                 android:name="com.funyoung.quickrepair.SettingsActivity"
                 android:label="@string/settings"
+                android:theme="@android:style/Theme.Holo.Light"
                 android:configChanges="orientation"
                 android:screenOrientation="sensor">
         </activity>
@@ -150,8 +151,10 @@
 
         <meta-data android:value="51f1ccf956240b3091033175" android:name="UMENG_APPKEY"></meta-data>
         <meta-data android:value="ANDROID_DEBUG" android:name="UMENG_CHANNEL"/>
-        <activity android:name="com.umeng.fb.ConversationActivity"/>
-        <activity android:name="com.umeng.fb.ContactActivity"/>
+        <activity android:name="com.umeng.fb.ConversationActivity"
+                  android:theme="@android:style/Theme.Holo.Light.NoActionBar"/>
+        <activity android:name="com.umeng.fb.ContactActivity"
+                  android:theme="@android:style/Theme.Holo.Light.NoActionBar"/>
 
         <!-- PhotoStream code -->
         <receiver android:name="com.funyoung.quickrepair.BootReceiver">

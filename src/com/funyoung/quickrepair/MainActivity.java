@@ -291,9 +291,19 @@ public class MainActivity extends FragmentActivity {
                 R.string.drawer_open, R.string.drawer_close);
         mDrawerToggle.syncState();
 
-        if (savedInstanceState == null) {
-            selectNavigateItem(1);
-        }
+//        if (savedInstanceState == null) {
+//            selectNavigateItem(1);
+//        }
+    }
+
+    protected void onStart() {
+        super.onStart();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                selectNavigateItem(1);
+            }
+        });
     }
 
     private Menu mOptionMenu;
@@ -525,7 +535,6 @@ public class MainActivity extends FragmentActivity {
     @Override
     public void onPause() {
         super.onPause();
-        FragmentFactory.getInstance(this).releaseCache();
         MobclickAgent.onPause(this);
     }
 

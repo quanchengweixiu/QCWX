@@ -6,6 +6,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.funyoung.qcwx.R;
 import com.funyoung.quickrepair.model.User;
@@ -20,6 +21,7 @@ public class FragmentFactory {
     private static final String FRAGMENT_PROFILE = "FRAGMENT_PROFILE";
     private static final String FRAGMENT_POST = "FRAGMENT_POST";
     private static final String FRAGMENT_POST_LIST = "FRAGMENT_POST_LIST";
+    private static final String TAG = "FragmentFactory";
 
     private String mCurrentFragment;
     public void gotoLoinFragment() {
@@ -51,7 +53,10 @@ public class FragmentFactory {
             mCurrentFragment = FRAGMENT_PROFILE;
             gotoFragmentView(profileFragment,  FRAGMENT_PROFILE,  FRAGMENT_DEFAULT);
         } else {
-            ((ProfileFragment)getCurrentFragment()).updateProfile(user);
+            ProfileFragment fragment = (ProfileFragment)getCurrentFragment();
+            if (null != fragment) {
+                fragment.updateProfile(user);
+            }
         }
     }
 
@@ -60,17 +65,23 @@ public class FragmentFactory {
         if (mCurrentFragment != FRAGMENT_POST) {
             mCurrentFragment = FRAGMENT_POST;
             PostCreateFragment postFragment = new PostCreateFragment();
-            postFragment = new PostCreateFragment();
             gotoFragmentView(postFragment, FRAGMENT_POST,  FRAGMENT_DEFAULT);
+            postFragment.updateCategory(mainId, subId);
+        } else {
+            PostCreateFragment fragment = (PostCreateFragment)getCurrentFragment();
+            if (null != fragment) {
+                fragment.updateCategory(mainId, subId);
+            }
         }
-        ((PostCreateFragment)getCurrentFragment()).updateCategory(mainId, subId);
     }
     private void gotoFragmentView(Fragment fragment, String name, String stackName) {
+        
         FragmentTransaction ft = _fragmentManager.beginTransaction();
         if (TextUtils.isEmpty(name)) {
             ft.replace(R.id.content_frame, fragment);
         } else {
             ft.replace(R.id.content_frame, fragment, name);
+//            ft.replace(R.id.content_frame, fragment);
         }
         if (false || !TextUtils.isEmpty(stackName)) {
             ft.addToBackStack(stackName);
@@ -97,9 +108,10 @@ public class FragmentFactory {
     }
 
     public void releaseCache() {
-        if (TextUtils.isEmpty(mCurrentFragment)) {
+        Fragment fragment = getCurrentFragment();
+        if (null != fragment && !fragment.isDetached()) {
             FragmentTransaction ft = _fragmentManager.beginTransaction();
-            ft.remove(getCurrentFragment());
+            ft.remove(fragment);
             mCurrentFragment = null;
             ft.commit();
         }
@@ -117,6 +129,11 @@ public class FragmentFactory {
         }
     }
     private Fragment getCurrentFragment() {
-        return _fragmentManager.findFragmentByTag(mCurrentFragment);
+        if (TextUtils.isEmpty(mCurrentFragment)) {
+            return null;
+        }
+
+        Fragment fragment = _fragmentManager.findFragmentByTag(mCurrentFragment);
+        return fragment;
     }
 }
