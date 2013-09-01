@@ -54,14 +54,15 @@ public class ProfileFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_profile, container, false);
 
+        Bundle args = getArguments();
+        if (null != args) {
+            mUser = User.fromBundle(args);
+        }
+        
         if (null != mRootView) {
             initViews(inflater);
         }
 
-        Bundle args = getArguments();
-        if (null != args) {
-
-        }
         performLoginTask();
 
         return mRootView;

@@ -164,10 +164,15 @@ public class User {
         bundle.putString(KEY_AVATAR, mAvatarUrl);
         return bundle;
     }
-//
-//    public static User fromBundle(Bundle bundle) {
-//        if (null != bundle) {
-//            User user = new User()
-//        }
-//    }
+
+    public static User fromBundle(Bundle bundle) {
+        if (null != bundle) {
+            long uid = bundle.getLong(KEY_UID);
+            String name = bundle.getString(KEY_NAME);
+            String avatarUrl = bundle.getString(KEY_AVATAR);
+            User user = new User(uid, name, avatarUrl, "", "");
+            return user;
+        }
+        return null;
+    }
 }
