@@ -171,10 +171,10 @@ public class PostCreateFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (null != mPublishTask) {
+        if (null != mPublishTask && mPublishTask.getStatus() == AsyncTask.Status.RUNNING) {
             mPublishTask.cancel(true);
-            mPublishTask = null;
         }
+        mPublishTask = null;
     }
 
     private void performPostTask() {

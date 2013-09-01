@@ -86,10 +86,10 @@ public class PostListFragment extends ListFragment implements
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (null != mPreTask) {
+        if (null != mPreTask && mPreTask.getStatus() == AsyncTask.Status.RUNNING) {
             mPreTask.cancel(true);
-            mPreTask = null;
         }
+        mPreTask = null;
     }
 
     private void performPreTask() {

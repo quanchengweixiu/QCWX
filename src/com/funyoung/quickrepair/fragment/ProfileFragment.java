@@ -197,10 +197,10 @@ public class ProfileFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (null != mLoginTask) {
+        if (null != mLoginTask && mLoginTask.getStatus() == AsyncTask.Status.RUNNING) {
             mLoginTask.cancel(true);
-            mLoginTask = null;
         }
+        mLoginTask = null;
     }
 
     public void updateProfile(User user) {

@@ -86,15 +86,15 @@ public class SignUpFragment extends UserFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (null != mSendCodeTask) {
+        if (null != mSendCodeTask && mSendCodeTask.getStatus() == AsyncTask.Status.RUNNING) {
             mSendCodeTask.cancel(true);
-            mSendCodeTask = null;
         }
+        mSendCodeTask = null;
 
-        if (null != mLoginTask) {
+        if (null != mLoginTask && mLoginTask.getStatus() == AsyncTask.Status.RUNNING) {
             mLoginTask.cancel(true);
-            mLoginTask = null;
         }
+        mLoginTask = null;
 
         if (null != handler) {
             handler.removeCallbacks(task);
