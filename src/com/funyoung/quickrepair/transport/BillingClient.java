@@ -50,7 +50,7 @@ public final class BillingClient extends HttpRequestExecutor {
         HttpRequestBuilder builder = new HttpRequestBuilder(HttpRequestBuilder.POST,
                 MODULE, Method.ITEM_BILL);
 
-        if (null == post) {
+        if (null != post) {
             builder.parameter(API_PARAM_USER_ID, String.valueOf(post.uid));
             builder.parameter(API_PARAM_POST_ID, post.postId);
         }

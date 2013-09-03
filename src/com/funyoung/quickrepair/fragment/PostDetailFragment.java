@@ -29,12 +29,10 @@ import java.util.HashMap;
 import baidumapsdk.demo.DemoApplication;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 
-public class PostDetailFragment extends ListFragment implements
-        PullToRefreshAttacher.OnRefreshListener {
+public class PostDetailFragment extends BaseFragment {
     private static final String TAG = "PostDetailFragment";
-    private static final long SIMULATED_REFRESH_LENGTH = 5000;
+//    private static final long SIMULATED_REFRESH_LENGTH = 5000;
 
-//    private User mUser;
     private Post mPost;
 
     private AsyncTask<Void, Void, String> mPreTask;
@@ -43,7 +41,6 @@ public class PostDetailFragment extends ListFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        mUser = ((DemoApplication)getActivity().getApplication()).getLoginUser();
         Bundle args = getArguments();
         if (null != args) {
             mPost = Post.fromBundle(args);
@@ -53,7 +50,7 @@ public class PostDetailFragment extends ListFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_post_detail, container, false);
 //        mPullToRefreshAttacher.addRefreshableView(getListView(), this);
         performPreTask();
         return view;
@@ -62,11 +59,11 @@ public class PostDetailFragment extends ListFragment implements
     @Override
     public void onStart() {
         super.onStart();
-        if (null == mPullToRefreshAttacher) {
-            mPullToRefreshAttacher = ((MainActivity) getActivity())
-                    .getPullToRefreshAttacher();
-            mPullToRefreshAttacher.addRefreshableView(getListView(), this);
-        }
+//        if (null == mPullToRefreshAttacher) {
+//            mPullToRefreshAttacher = ((MainActivity) getActivity())
+//                    .getPullToRefreshAttacher();
+//            mPullToRefreshAttacher.addRefreshableView(getView(), this);
+//        }
     }
 
 
@@ -131,7 +128,6 @@ public class PostDetailFragment extends ListFragment implements
         return "";
     }
 
-    // new String[] { "img", "label", "time", "description", "price" },
     private void refreshUi() {
         if (null == mPost) {
             // fill in with debug data
@@ -145,34 +141,34 @@ public class PostDetailFragment extends ListFragment implements
                 DateUtils.FORMAT_NUMERIC_DATE | DateUtils.FORMAT_SHOW_TIME));
     }
 
-    private PullToRefreshAttacher mPullToRefreshAttacher;
-
-    @Override
-    public void onRefreshStarted(View view) {
-        /**
-         * Simulate Refresh with 4 seconds sleep
-         */
-        new AsyncTask<Void, Void, Void>() {
-
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    Thread.sleep(SIMULATED_REFRESH_LENGTH);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void result) {
-                super.onPostExecute(result);
-
-                // Notify PullToRefreshAttacher that the refresh has finished
-                mPullToRefreshAttacher.setRefreshComplete();
-            }
-        }.execute();
-    }
+//    private PullToRefreshAttacher mPullToRefreshAttacher;
+//
+//    @Override
+//    public void onRefreshStarted(View view) {
+//        /**
+//         * Simulate Refresh with 4 seconds sleep
+//         */
+//        new AsyncTask<Void, Void, Void>() {
+//
+//            @Override
+//            protected Void doInBackground(Void... params) {
+//                try {
+//                    Thread.sleep(SIMULATED_REFRESH_LENGTH);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                return null;
+//            }
+//
+//            @Override
+//            protected void onPostExecute(Void result) {
+//                super.onPostExecute(result);
+//
+//                // Notify PullToRefreshAttacher that the refresh has finished
+//                mPullToRefreshAttacher.setRefreshComplete();
+//            }
+//        }.execute();
+//    }
 
     public void updateArguments(Bundle args) {
         mPost = Post.fromBundle(args);

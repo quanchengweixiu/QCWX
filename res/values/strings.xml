@@ -86,4 +86,10 @@
     <string name="post_item_title">标题</string>
     <string name="post_item_time">发布时间 %1$s</string>
     <string name="post_item_status">订单状态:%1$s</string>
+    <string name="post_create_time">发布时间:</string>
+    <string name="qp_post_order">抢单</string>
+    <string name="qp_post_write_comment">写评论</string>
+    <string name="post_comment">评论</string>
+    <string name="post_description_demo">我家的空调排气扇灰尘太大，需要清理。</string>
+    <string name="post_comment_hint">(有疑问可以直接写评论)</string>
 </resources>
