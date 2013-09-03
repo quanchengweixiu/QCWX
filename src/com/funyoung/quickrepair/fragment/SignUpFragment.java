@@ -27,6 +27,7 @@ import com.funyoung.qcwx.R;
 import com.funyoung.quickrepair.MainActivity;
 import com.funyoung.quickrepair.model.User;
 import com.funyoung.quickrepair.transport.UsersClient;
+import com.funyoung.quickrepair.utils.AsyncTaskUtils;
 import com.funyoung.quickrepair.utils.PerformanceUtils;
 import com.funyoung.quickrepair.utils.TelephonyUtils;
 
@@ -157,7 +158,10 @@ public class SignUpFragment extends UserFragment {
                 }
             }
         };
-        mSendCodeTask.execute();
+
+        if (AsyncTaskUtils.isReadyToRun(mSendCodeTask)) {
+            mSendCodeTask.execute();
+        }
     }
 
     private static final long A_SECOND = 1000;
@@ -241,7 +245,10 @@ public class SignUpFragment extends UserFragment {
                 }
             };
         }
-        mLoginTask.execute();
+
+        if (AsyncTaskUtils.isReadyToRun(mLoginTask)) {
+            mLoginTask.execute();
+        }
     }
 
     private String queryMyMobile() {

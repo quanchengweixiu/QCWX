@@ -29,45 +29,25 @@ import java.util.HashMap;
 import baidumapsdk.demo.DemoApplication;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 
-public class PostListFragment extends ListFragment implements
+public class PostDetailFragment extends ListFragment implements
         PullToRefreshAttacher.OnRefreshListener {
-    private static final String TAG = "PostListFragment";
+    private static final String TAG = "PostDetailFragment";
     private static final long SIMULATED_REFRESH_LENGTH = 5000;
 
-    private User mUser;
-    SimpleAdapter adapter;
-    private ArrayList<Post> mPostList = new ArrayList<Post>();
+//    private User mUser;
+    private Post mPost;
 
     private AsyncTask<Void, Void, String> mPreTask;
-    ArrayList<HashMap<String, Object>> itemData = new ArrayList<HashMap<String, Object>>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mUser = ((DemoApplication)getActivity().getApplication()).getLoginUser();
-        /**
-         * Get ListView and give it an adapter to display the sample items
-         */
-//        ListAdapter adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1,
-//                ITEMS);
-
-        adapter = new SimpleAdapter(getActivity(),
-                itemData,
-                R.layout.gridview_item_post,
-                new String[] { "img", "label", "time", "description", "price", "status" },
-                new int[] { R.id.img, R.id.label, R.id.time, R.id.description, R.id.price, R.id.status });
-        setListAdapter(adapter);
-
-        /**
-         * Here we create a PullToRefreshAttacher manually without an Options instance.
-         * PullToRefreshAttacher will manually create one using default values.
-         */
-//            mPullToRefreshAttacher = PullToRefreshAttacher.get(getActivity());
-//        mPullToRefreshAttacher = ((MainActivity) getActivity())
-//                .getPullToRefreshAttacher();
-        // Set the Refreshable View to be the ListView and the refresh listener to be this.
-//        mPullToRefreshAttacher.addRefreshableView(getListView(), this);
+//        mUser = ((DemoApplication)getActivity().getApplication()).getLoginUser();
+        Bundle args = getArguments();
+        if (null != args) {
+            mPost = Post.fromBundle(args);
+        }
     }
 
     @Override
@@ -102,7 +82,7 @@ public class PostListFragment extends ListFragment implements
     private void performPreTask() {
         if (null == mPreTask) {
             mPreTask = new AsyncTask<Void, Void, String>() {
-                ArrayList<Post> mResult;
+                Post mResult;
                 long startTime;
                 @Override
                 protected void onPreExecute() {
@@ -114,10 +94,10 @@ public class PostListFragment extends ListFragment implements
                 protected String doInBackground(Void... voids) {
                     try {
                         final HashMap<String, String> filter = null;
-                        mResult = BillingClient.listBill(getActivity(), mUser, filter);
-                        return "listBill succeed by " + getCurrentUserName();
+                        mResult = BillingClient.getBillInfo(getActivity(), mPost, filter);
+                        return "getBillInfo succeed by " + mPost.postId;
                     } catch (Exception e) {
-                        return "listBill exception " + e.getMessage();
+                        return "getBillInfo exception " + e.getMessage();
                     }
                 }
 
@@ -126,10 +106,9 @@ public class PostListFragment extends ListFragment implements
                     final long diff = PerformanceUtils.showTimeDiff(startTime, System.currentTimeMillis());
                     PerformanceUtils.showToast(getActivity(), result, diff);
 
-                    mPostList.clear();
-                    if (mResult != null && !mResult.isEmpty()) {
+                    if (mResult != null) {
                         Toast.makeText(getActivity(), R.string.list_posts_succeed, Toast.LENGTH_SHORT).show();
-                        mPostList.addAll(mResult);
+                        mPost = mResult;
                         refreshUi();
                     } else {
                         Toast.makeText(getActivity(), R.string.list_posts_fail, Toast.LENGTH_SHORT).show();
@@ -140,11 +119,6 @@ public class PostListFragment extends ListFragment implements
         if (AsyncTaskUtils.isReadyToRun(mPreTask)) {
             mPreTask.execute();
         }
-    }
-
-    private String getCurrentUserName() {
-        if (null == mUser) return "null";
-        return mUser.getNickName();
     }
 
     private String getContent(View hostView) {
@@ -159,23 +133,11 @@ public class PostListFragment extends ListFragment implements
 
     // new String[] { "img", "label", "time", "description", "price" },
     private void refreshUi() {
-        itemData.clear();
-        if (null == mPostList || mPostList.isEmpty()) {
+        if (null == mPost) {
             // fill in with debug data
         } else {
-            HashMap<String, Object> item;
-            for (Post post : mPostList) {
-                item = new HashMap<String, Object>();
-                item.put("img", MainActivity.images[post.category]);
-                item.put("label", post.area);
-                item.put("time", formatDate(getActivity(), post.createTime));
-                item.put("description", post.description);
-                item.put("price", getString(R.string.post_item_price, post.getPrice()));
-                item.put("status", getString(R.string.post_item_status, post.getStatus()));
-                itemData.add(item);
-            }
+            // todo: inflat data to ui.
         }
-        adapter.notifyDataSetChanged();
     }
 
     private static String formatDate(Context context, long time) {
@@ -212,15 +174,8 @@ public class PostListFragment extends ListFragment implements
         }.execute();
     }
 
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        if (mPostList.isEmpty()) {
-            Log.e(TAG, "onListItemClick, error with empty post list");
-            return;
-        } else if (position < 0 || position >= mPostList.size()) {
-            Log.e(TAG, "onListItemClick, error with invalid position " + position);
-        } else {
-            Post post = mPostList.get(position);
-            FragmentFactory.getInstance(getActivity()).gotoPostDetailFragment(post.toBundle());
-        }
+    public void updateArguments(Bundle args) {
+        mPost = Post.fromBundle(args);
+        refreshUi();
     }
 }

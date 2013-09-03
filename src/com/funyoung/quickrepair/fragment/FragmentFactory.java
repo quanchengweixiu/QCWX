@@ -9,19 +9,21 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.funyoung.qcwx.R;
+import com.funyoung.quickrepair.model.Post;
 import com.funyoung.quickrepair.model.User;
 
 /**
  * Created by yangfeng on 13-8-10.
  */
 public class FragmentFactory {
+    private static final String TAG = "FragmentFactory";
     private static final String FRAGMENT_DEFAULT = "FRAGMENT_DEFAULT";
     private static final String FRAGMENT_LOGIN = "FRAGMENT_LOGIN";
     private static final String FRAGMENT_MAP = "FRAGMENT_MAP";
     private static final String FRAGMENT_PROFILE = "FRAGMENT_PROFILE";
     private static final String FRAGMENT_POST = "FRAGMENT_POST";
     private static final String FRAGMENT_POST_LIST = "FRAGMENT_POST_LIST";
-    private static final String TAG = "FragmentFactory";
+    private static final String FRAGMENT_POST_DETAIL = "FRAGMENT_POST_DETAIL";
 
     private String mCurrentFragment;
     public void gotoLoinFragment() {
@@ -135,5 +137,19 @@ public class FragmentFactory {
 
         Fragment fragment = _fragmentManager.findFragmentByTag(mCurrentFragment);
         return fragment;
+    }
+
+    public void gotoPostDetailFragment(Bundle args) {
+        if (mCurrentFragment != FRAGMENT_POST_DETAIL) {
+            PostDetailFragment profileFragment = new PostDetailFragment();
+            profileFragment.setArguments(args);
+            mCurrentFragment = FRAGMENT_POST_DETAIL;
+            gotoFragmentView(profileFragment,  FRAGMENT_POST_DETAIL,  FRAGMENT_DEFAULT);
+        } else {
+            PostDetailFragment fragment = (PostDetailFragment)getCurrentFragment();
+            if (null != fragment) {
+                fragment.updateArguments(args);
+            }
+        }
     }
 }

@@ -1,5 +1,8 @@
 package com.funyoung.quickrepair.model;
 
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -24,8 +27,9 @@ import java.util.ArrayList;
  createyear:年份
  photo[]: “XXX” // 图片URL列表， 图片文件需先调接口生成URL
  */
-public class Post {
+public class Post implements Parcelable {
     private static final String TAG = "Post";
+    public String postId;
     public long uid;
     public int category;
     public int subCategory;
@@ -74,10 +78,20 @@ public class Post {
 
         return postList;
     }
+    public static Post parseResult(String str) {
+        try {
+            JSONObject jsonObject = new JSONObject(str);
+            return fromJson(jsonObject);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     private static Post fromJson(JSONObject obj) {
         Post post = new Post();
         if (null != obj) {
+            post.postId = obj.optString("post_id");
             post.uid = obj.optLong("uid");
             post.category = obj.optInt("categoryid");
             post.subCategory = obj.optInt("sub_categoryid");
@@ -95,5 +109,82 @@ public class Post {
 
     public String getStatus() {
         return "未被抢";
+    }
+
+    public static final Parcelable.Creator<Post> CREATOR = new Creator<Post>() {
+        public Post createFromParcel(Parcel source) {
+            Post post = new Post();
+            post.postId = source.readString();
+            post.uid = source.readLong();
+            post.category = source.readInt();
+            post.subCategory = source.readInt();
+            post.latitude = source.readLong();
+            post.longitude = source.readLong();
+
+            post.description = source.readString();
+            post.address = source.readString();
+            post.area = source.readString();
+            post.brand = source.readString();
+            post.contact = source.readString();
+            post.mobile = source.readString();
+
+            post.model = source.readString();
+            post.createYear = source.readString();
+            source.readStringArray(post.photos);
+            post.createTime = source.readLong();
+            post.updateTime = source.readLong();
+            post.price = source.readString();
+            post.status = source.readInt();
+            return post;
+        }
+        public Post[] newArray(int size) {
+            return new Post[size];
+        }
+    };
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeString(postId);
+        parcel.writeLong(uid);  // source.readLong();
+        parcel.writeInt(category);  // source.readInt();
+        parcel.writeInt(subCategory);  // source.readInt();
+        parcel.writeLong(latitude);  // source.readLong();
+        parcel.writeLong(longitude);  // source.readLong();
+
+        parcel.writeString(description);  // source.readString();
+        parcel.writeString(address);  // source.readString();
+        parcel.writeString(area);  // source.readString();
+        parcel.writeString(brand);  // source.readString();
+        parcel.writeString(contact);  // source.readString();
+        parcel.writeString(mobile);  // source.readString();
+
+        parcel.writeString(model);  // source.readString();
+        parcel.writeString(createYear);  // source.readString();
+        parcel.writeStringArray(photos);
+        parcel.writeLong(createTime);  // source.readLong();
+        parcel.writeLong(updateTime);  // source.readLong();
+        parcel.writeString(price);  // source.readString();
+        parcel.writeInt(status);  // source.readInt();
+    }
+
+    public Bundle toBundle() {
+        Bundle args = new Bundle();
+        args.putParcelable("POST", this);
+        return args;
+    }
+    public static Post fromBundle(Bundle args) {
+        if (null == args) {
+            return new Post();
+        }
+        Post post = args.getParcelable("POST");
+        if (null == post) {
+            return new Post();
+        } else {
+            return post;
+        }
     }
 }

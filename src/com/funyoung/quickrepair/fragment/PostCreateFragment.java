@@ -18,6 +18,7 @@ import com.funyoung.qcwx.R;
 import com.funyoung.quickrepair.model.Post;
 import com.funyoung.quickrepair.model.User;
 import com.funyoung.quickrepair.transport.BillingClient;
+import com.funyoung.quickrepair.utils.AsyncTaskUtils;
 import com.funyoung.quickrepair.utils.PerformanceUtils;
 
 import baidumapsdk.demo.DemoApplication;
@@ -222,7 +223,9 @@ public class PostCreateFragment extends BaseFragment {
                 }
             };
         }
-        mPublishTask.execute();
+        if (AsyncTaskUtils.isReadyToRun(mPublishTask)) {
+            mPublishTask.execute();
+        }
     }
 
     private Post encodePost() {

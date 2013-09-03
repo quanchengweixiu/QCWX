@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.funyoung.qcwx.R;
 import com.funyoung.quickrepair.model.User;
 import com.funyoung.quickrepair.transport.UsersClient;
+import com.funyoung.quickrepair.utils.AsyncTaskUtils;
 import com.funyoung.quickrepair.utils.DialogUtils;
 import com.funyoung.quickrepair.utils.PerformanceUtils;
 import com.funyoung.quickrepair.utils.QiupuHelper;
@@ -252,7 +253,9 @@ public class ProfileFragment extends BaseFragment {
                 }
             };
         }
-        mLoginTask.execute();
+        if (AsyncTaskUtils.isReadyToRun(mLoginTask)) {
+            mLoginTask.execute();
+        }
     }
 
     private void refreshUI() {

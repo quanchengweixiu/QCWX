@@ -53,6 +53,7 @@ public abstract class HttpRequestExecutor {
     protected static final String API_PARAM_USER_TYPE = "user_type";
     protected static final String API_PARAM_CODE = "password";
     protected static final String API_PARAM_USER_ID = "uid";
+    protected static final String API_PARAM_POST_ID = "post_id";
 
     protected static final String API_PARAM_CATEGORY = "category";
     protected static final String API_PARAM_SUB_CATEGORY = "sub_category";

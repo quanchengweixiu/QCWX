@@ -24,6 +24,7 @@ public final class BillingClient extends HttpRequestExecutor {
     private final static class Method {
         private static final String CREATE_BILL = "createBill";
         private static final String LIST_BILL = "getBillList";
+        private static final String ITEM_BILL = "getBillInfo";
     }
 
     public  String createBill(Post post) throws IOException, ApiException {
@@ -43,6 +44,22 @@ public final class BillingClient extends HttpRequestExecutor {
                 .parameter(API_PARAM_MODEL_AGE, post.createYear)
                 .create();
         return doRequest(request);
+    }
+
+    public String getBillingInfo(Post post,  HashMap<String, String> filter) throws IOException, ApiException {
+        HttpRequestBuilder builder = new HttpRequestBuilder(HttpRequestBuilder.POST,
+                MODULE, Method.ITEM_BILL);
+
+        if (null == post) {
+            builder.parameter(API_PARAM_USER_ID, String.valueOf(post.uid));
+            builder.parameter(API_PARAM_POST_ID, post.postId);
+        }
+
+        if (null != filter) {
+            // todo: intercept filter info into builder.
+            builder.parameter(filter);
+        }
+        return doRequest(builder.create());
     }
 
     public  String listBill(User user, HashMap<String, String> filter) throws IOException, ApiException {
@@ -114,4 +131,24 @@ public final class BillingClient extends HttpRequestExecutor {
         return null;
     }
 
+    public static Post getBillInfo(Context context, Post post, HashMap<String, String> filter) {
+        BillingClient ac = new BillingClient(context, SimpleHttpClient.get());
+        Exception exception = null;
+        try {
+            String result = ac.getBillingInfo(post, filter);
+            return Post.parseResult(result);
+        } catch (ClientProtocolException e) {
+            exception = e;
+            e.printStackTrace();
+        } catch (IOException e) {
+            exception = e;
+            e.printStackTrace();
+        } catch (Exception e) {
+            exception = e;
+            e.printStackTrace();
+        } finally {
+            postCheckApiException(context, exception);
+        }
+        return null;
+    }
 }
