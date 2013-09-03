@@ -115,7 +115,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            android:layout_margin="10dip"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
             android:text="@string/post_description"
             android:singleLine="true" />
 
@@ -124,7 +125,9 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            android:layout_margin="10dip"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:textColor="@android:color/darker_gray"
             android:text="@string/post_description_demo"
             android:maxLines="10" />
 
@@ -136,7 +139,7 @@
               android:layout_margin="10dip"
               android:minHeight="@dimen/item_block_min_size"
               android:minWidth="96dp"
-              android:textColor="@android:color/darker_gray"
+              android:textColor="@android:color/white"
               android:layout_gravity="center"
               android:gravity="center"
               android:text="@string/qp_post_order"
