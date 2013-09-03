@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:layout_margin="20dip"
               android:layout_gravity="center"
               android:orientation="vertical" >
 
@@ -18,7 +17,7 @@
             android:id="@+id/info_l"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dip"
+            android:layout_margin="10dip"
             android:orientation="horizontal"
             android:baselineAligned="false">
 
@@ -116,7 +115,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            android:layout_marginTop="5dip"
+            android:layout_margin="10dip"
             android:text="@string/post_description"
             android:singleLine="true" />
 
@@ -125,19 +124,19 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            android:layout_marginTop="5dip"
+            android:layout_margin="10dip"
             android:text="@string/post_description_demo"
-            android:maxLines="15" />
+            android:maxLines="10" />
 
 
     <TextView android:id="@+id/tv_order"
               android:background="@drawable/button_style"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:layout_marginLeft="10dip"
+              android:layout_margin="10dip"
               android:minHeight="@dimen/item_block_min_size"
-              android:minWidth="72dp"
-              android:textColor="@android:color/white"
+              android:minWidth="96dp"
+              android:textColor="@android:color/darker_gray"
               android:layout_gravity="center"
               android:gravity="center"
               android:text="@string/qp_post_order"
@@ -147,7 +146,8 @@
             android:id="@+id/comment_l"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dip"
+            android:layout_margin="10dip"
+            android:gravity="center_vertical"
             android:orientation="horizontal" >
 
         <TextView
@@ -161,8 +161,9 @@
 
         <TextView
                 android:id="@+id/hint_comment"
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_gravity="left"
                 android:layout_marginTop="5dip"
                 android:textColor="@android:color/darker_gray"
@@ -170,15 +171,13 @@
                 android:singleLine="true" />
 
 
-        <TextView android:id="@+id/tv_order"
-                  android:background="@drawable/button_style"
+        <TextView android:id="@+id/tv_comment"
+                  android:background="@drawable/btn_login_go"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:layout_marginLeft="10dip"
-                  android:minHeight="@dimen/item_block_min_size"
-                  android:minWidth="50dp"
                   android:textColor="@android:color/white"
                   android:layout_gravity="right"
+                  android:minWidth="72dip"
                   android:gravity="center"
                   android:text="@string/qp_post_write_comment"
                 />
