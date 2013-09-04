@@ -1,6 +1,7 @@
 
 package com.funyoung.quickrepair.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListFragment;
 import android.content.Context;
@@ -90,9 +91,17 @@ public class PostDetailFragment extends BaseFragment {
     }
 
     private void addComment() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        final EditText editText = new EditText(getActivity());
-        editText.setHint(R.string.post_comment_hint);
+        Activity context = getActivity();
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater=LayoutInflater.from(context);
+        View layout = inflater.inflate(R.layout.post_add_comment,
+                (ViewGroup)context.findViewById(R.id.send_email_dialog_ll));
+        builder.setView(layout);
+        final EditText editText = (EditText)layout.findViewById(R.id.send_email_dialog_et);
+
+//        final EditText editText = new EditText(getActivity());
+//        editText.setHint(R.string.post_comment_hint);
+//        builder.setView(editText);
         builder.setTitle(R.string.qp_post_write_comment);
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
