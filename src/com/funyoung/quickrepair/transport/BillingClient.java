@@ -25,6 +25,7 @@ public final class BillingClient extends HttpRequestExecutor {
         private static final String CREATE_BILL = "createBill";
         private static final String LIST_BILL = "getBillList";
         private static final String ITEM_BILL = "getBillInfo";
+        private static final String TAKE_BILL = "scrambleBill";
     }
 
     public  String createBill(Post post) throws IOException, ApiException {
@@ -58,6 +59,17 @@ public final class BillingClient extends HttpRequestExecutor {
         if (null != filter) {
             // todo: intercept filter info into builder.
             builder.parameter(filter);
+        }
+        return doRequest(builder.create());
+    }
+
+    public String scrambleBill(Post post) throws IOException, ApiException {
+        HttpRequestBuilder builder = new HttpRequestBuilder(HttpRequestBuilder.POST,
+                MODULE, Method.TAKE_BILL);
+
+        if (null != post) {
+//            builder.parameter(API_PARAM_USER_ID, String.valueOf(post.uid));
+            builder.parameter(API_PARAM_POST_ID, post.postId);
         }
         return doRequest(builder.create());
     }
@@ -136,6 +148,27 @@ public final class BillingClient extends HttpRequestExecutor {
         Exception exception = null;
         try {
             String result = ac.getBillingInfo(post, filter);
+            return Post.parseResult(result);
+        } catch (ClientProtocolException e) {
+            exception = e;
+            e.printStackTrace();
+        } catch (IOException e) {
+            exception = e;
+            e.printStackTrace();
+        } catch (Exception e) {
+            exception = e;
+            e.printStackTrace();
+        } finally {
+            postCheckApiException(context, exception);
+        }
+        return null;
+    }
+
+    public static Post scrambleBill(Context context, Post post) {
+        BillingClient ac = new BillingClient(context, SimpleHttpClient.get());
+        Exception exception = null;
+        try {
+            String result = ac.scrambleBill(post);
             return Post.parseResult(result);
         } catch (ClientProtocolException e) {
             exception = e;

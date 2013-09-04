@@ -1,5 +1,7 @@
 package com.funyoung.quickrepair.fragment;
 
+import android.app.Activity;
+import android.app.Application;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
@@ -12,6 +14,9 @@ import android.widget.TextView;
 
 import com.funyoung.qcwx.R;
 import com.funyoung.quickrepair.MainActivity;
+import com.funyoung.quickrepair.model.User;
+
+import baidumapsdk.demo.DemoApplication;
 
 /**
  * Created by yangfeng on 13-7-2.
@@ -34,6 +39,26 @@ public class BaseFragment extends Fragment {
         Context context = getActivity();
         FragmentSession session = new FragmentSession(context, state);
         MainActivity.invoke(context, session, null, exception);
+    }
+
+    protected User getCurrentUser() {
+        return DemoApplication.getInstance().getLoginUser();
+    }
+    protected boolean isMySelf(long uid) {
+        User user = getCurrentUser();
+        if (null != user && user.getUid() == uid) {
+            return true;
+        }
+        return false;
+    }
+    protected boolean isServiceProvider() {
+        User user = getCurrentUser();
+        if (null != user) {
+            if (user.isProviderType()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 

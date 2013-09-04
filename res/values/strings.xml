@@ -92,4 +92,8 @@
     <string name="post_comment">评论</string>
     <string name="post_description_demo">我家的空调排气扇灰尘太大，需要清理。</string>
     <string name="post_comment_hint">(有疑问可以直接写评论)</string>
+    <string name="take_post_succeed">抢单成功</string>
+    <string name="take_post_fail">抢单失败</string>
+    <string name="get_post_succeed">成功获取工单详情</string>
+    <string name="get_post_fail">获取工单详情失败</string>
 </resources>

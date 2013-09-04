@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.format.DateUtils;
+import android.util.Config;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.funyoung.qcwx.R;
+import com.funyoung.quickrepair.DeployConfig;
 import com.funyoung.quickrepair.MainActivity;
 import com.funyoung.quickrepair.model.Post;
 import com.funyoung.quickrepair.model.User;
@@ -36,6 +38,7 @@ public class PostDetailFragment extends BaseFragment {
     private Post mPost;
 
     private AsyncTask<Void, Void, String> mPreTask;
+    private AsyncTask<Void, Void, String> mTakeTask;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,8 +55,31 @@ public class PostDetailFragment extends BaseFragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_post_detail, container, false);
 //        mPullToRefreshAttacher.addRefreshableView(getListView(), this);
+        initViews(view);
         performPreTask();
         return view;
+    }
+
+    private void initViews(View view) {
+        if (null == view) {
+            return;
+        }
+        View orderView = view.findViewById(R.id.tv_order);
+        if (null != orderView) {
+            if (DeployConfig.DEBUG_BOTH_USER_TYPE || isServiceProvider()) {
+                orderView.setVisibility(View.VISIBLE);
+                orderView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        takeThePost();
+                    }
+                });
+            } else {
+                orderView.setVisibility(View.GONE);
+                orderView.setOnClickListener(null);
+            }
+
+        }
     }
 
     @Override
@@ -73,7 +99,11 @@ public class PostDetailFragment extends BaseFragment {
         if (null != mPreTask && mPreTask.getStatus() == AsyncTask.Status.RUNNING) {
             mPreTask.cancel(true);
         }
+        if (null != mTakeTask && mTakeTask.getStatus() == AsyncTask.Status.RUNNING) {
+            mTakeTask.cancel(true);
+        }
         mPreTask = null;
+        mTakeTask = null;
     }
 
     private void performPreTask() {
@@ -104,17 +134,59 @@ public class PostDetailFragment extends BaseFragment {
                     PerformanceUtils.showToast(getActivity(), result, diff);
 
                     if (mResult != null) {
-                        Toast.makeText(getActivity(), R.string.list_posts_succeed, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), R.string.get_post_succeed, Toast.LENGTH_SHORT).show();
                         mPost = mResult;
                         refreshUi();
                     } else {
-                        Toast.makeText(getActivity(), R.string.list_posts_fail, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), R.string.get_post_fail, Toast.LENGTH_SHORT).show();
                     }
                 }
             };
         }
         if (AsyncTaskUtils.isReadyToRun(mPreTask)) {
             mPreTask.execute();
+        }
+    }
+
+    private void performTakeTask() {
+        if (null == mTakeTask) {
+            mTakeTask = new AsyncTask<Void, Void, String>() {
+                Post mResult;
+                long startTime;
+                @Override
+                protected void onPreExecute() {
+                    mResult = null;
+                    startTime = System.currentTimeMillis();
+                }
+
+                @Override
+                protected String doInBackground(Void... voids) {
+                    try {
+//                        final HashMap<String, String> filter = null;
+                        mResult = BillingClient.scrambleBill(getActivity(), mPost);
+                        return "scrambleBill succeed by " + mPost.postId;
+                    } catch (Exception e) {
+                        return "scrambleBill exception " + e.getMessage();
+                    }
+                }
+
+                @Override
+                protected void onPostExecute(String result) {
+                    final long diff = PerformanceUtils.showTimeDiff(startTime, System.currentTimeMillis());
+                    PerformanceUtils.showToast(getActivity(), result, diff);
+
+                    if (mResult != null) {
+                        Toast.makeText(getActivity(), R.string.take_post_succeed, Toast.LENGTH_SHORT).show();
+                        mPost = mResult;
+                        refreshUi();
+                    } else {
+                        Toast.makeText(getActivity(), R.string.take_post_fail, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            };
+        }
+        if (AsyncTaskUtils.isReadyToRun(mTakeTask)) {
+            mTakeTask.execute();
         }
     }
 
@@ -173,5 +245,13 @@ public class PostDetailFragment extends BaseFragment {
     public void updateArguments(Bundle args) {
         mPost = Post.fromBundle(args);
         refreshUi();
+    }
+
+    private void takeThePost() {
+        if (null == mPost) {
+            Log.e(TAG, "takeThePost, skip null post");
+            return;
+        }
+        performTakeTask();
     }
 }
