@@ -49,27 +49,30 @@ public abstract class HttpRequestExecutor {
     protected static final String API_PARAM_MODULE = "module";
     protected static final String API_PARAM_COMMAND = "method";
     protected static final String API_PARAM_SIGN = "sign";
-    protected static final String API_PARAM_PHONE = "mobile";
-    protected static final String API_PARAM_USER_TYPE = "user_type";
-    protected static final String API_PARAM_CODE = "password";
-    protected static final String API_PARAM_USER_ID = "uid";
-    protected static final String API_PARAM_POST_ID = "post_id";
-    protected static final String API_PARAM_COMMENT_MESSAGE = "message";
 
-    protected static final String API_PARAM_CATEGORY = "category";
-    protected static final String API_PARAM_SUB_CATEGORY = "sub_category";
-    protected static final String API_PARAM_LATITUDE = "latitude";
-    protected static final String API_PARAM_LONGITUDE = "longitude";
-    protected static final String API_PARAM_DESCRIPTION = "description";
-    protected static final String API_PARAM_ADDRESS = "address";
-    protected static final String API_PARAM_AREA = "area";
-    protected static final String API_PARAM_BRAND = "brand";
-    protected static final String API_PARAM_CONTACT = "contact";
-    protected static final String API_PARAM_MODEL = "version";
-    protected static final String API_PARAM_MODEL_AGE = "createyear";
+    public static final String API_PARAM_PHONE = "mobile";
+    public static final String API_PARAM_USER_TYPE = "user_type";
+    public static final String API_PARAM_CODE = "password";
+    public static final String API_PARAM_USER_ID = "uid";
+    public static final String API_PARAM_POST_ID = "post_id";
+    public static final String API_PARAM_COMMENT_MESSAGE = "message";
 
-    protected final String API_VALUE_USER_TYPE_B = "0";
-    protected final String API_VALUE_USER_TYPE_A = "1";
+    public static final String API_PARAM_CATEGORY = "category";
+    public static final String API_PARAM_SUB_CATEGORY = "sub_category";
+    public static final String API_PARAM_LATITUDE = "latitude";
+    public static final String API_PARAM_LONGITUDE = "longitude";
+    public static final String API_PARAM_DESCRIPTION = "description";
+    public static final String API_PARAM_ADDRESS = "address";
+    public static final String API_PARAM_AREA = "area";
+    public static final String API_PARAM_BRAND = "brand";
+    public static final String API_PARAM_CONTACT = "contact";
+    public static final String API_PARAM_MODEL = "version";
+    public static final String API_PARAM_MODEL_AGE = "createyear";
+
+    public static final String API_PARAM_CHANNEL_ID = "channel_id";
+
+    public final String API_VALUE_USER_TYPE_B = "0";
+    public final String API_VALUE_USER_TYPE_A = "1";
 
 //    private static final String API_KEY_RES_CODE = "error_code";
 //    private static final String API_KEY_RES_MESSAGE = "error_msg";

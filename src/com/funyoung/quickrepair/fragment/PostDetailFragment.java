@@ -267,6 +267,14 @@ public class PostDetailFragment extends BaseFragment {
             // fill in with debug data
         } else {
             // todo: inflat data to ui.
+            switch (mPost.status) {
+                case 0:
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+            }
         }
     }
 

@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.funyoung.quickrepair.transport.HttpRequestExecutor;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,6 +55,7 @@ public class Post implements Parcelable {
     public String price;
     public int status;
 
+    private static final String TAG_KEY_POSTS = "posts";
     public static ArrayList<Post> parseListResult(String result) {
         ArrayList<Post> postList = new ArrayList<Post>();
         if (TextUtils.isEmpty(result)) {
@@ -61,7 +64,7 @@ public class Post implements Parcelable {
 
         try {
             JSONObject jsonObject = new JSONObject(result);
-            JSONArray posts = jsonObject.optJSONArray("posts");
+            JSONArray posts = jsonObject.optJSONArray(TAG_KEY_POSTS);
             if (null == posts || posts.length() == 0) {
                 Log.i(TAG, "parseListResult, got empty list");
             } else {
@@ -81,7 +84,8 @@ public class Post implements Parcelable {
     public static Post parseResult(String str) {
         try {
             JSONObject jsonObject = new JSONObject(str);
-            return fromJson(jsonObject);
+            JSONObject postJson = jsonObject.optJSONObject(TAG_KEY_POSTS);
+            return fromJson(postJson);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -91,13 +95,32 @@ public class Post implements Parcelable {
     private static Post fromJson(JSONObject obj) {
         Post post = new Post();
         if (null != obj) {
-            post.postId = obj.optString("post_id");
-            post.uid = obj.optLong("uid");
+            post.postId = obj.optString(HttpRequestExecutor.API_PARAM_POST_ID);
+            post.uid = obj.optLong(HttpRequestExecutor.API_PARAM_USER_ID);
             post.category = obj.optInt("categoryid");
             post.subCategory = obj.optInt("sub_categoryid");
-            post.description = obj.optString("description");
-            post.status = obj.optInt("status");
+            post.longitude = obj.optLong("lon");
+            post.latitude = obj.optLong("lat");
+            post.description = obj.optString(HttpRequestExecutor.API_PARAM_DESCRIPTION);
+            post.address = obj.optString("address");
+            post.area = obj.optString("area");
+            post.brand = obj.optString("brand");
+            post.contact = obj.optString("contact"); // todo: return
+            post.mobile = obj.optString("mobile");
+            post.model = obj.optString("version");
+            post.createYear = obj.optString("createyear");
+            JSONArray photos = obj.optJSONArray("photo");  // todo: return
+            if (null != photos) {
+                ArrayList<String> photoList = new ArrayList<String>();
+                for (int i = 0; i < photos.length(); i++) {
+//                photoList.add(photos.getString(i));
+                }
+                post.photos = photoList.toArray(new String[0]);
+            }
             post.createTime = obj.optLong("dateline");
+            post.updateTime = obj.optLong("updatetime");  // todo: return
+            post.price = obj.optString("price");          // todo: return
+            post.status = obj.optInt("status");
         }
         return post;
     }
