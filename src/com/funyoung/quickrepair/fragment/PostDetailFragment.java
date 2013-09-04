@@ -1,16 +1,20 @@
 
 package com.funyoung.quickrepair.fragment;
 
+import android.app.AlertDialog;
 import android.app.ListFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Config;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -23,6 +27,7 @@ import com.funyoung.quickrepair.model.Post;
 import com.funyoung.quickrepair.model.User;
 import com.funyoung.quickrepair.transport.BillingClient;
 import com.funyoung.quickrepair.utils.AsyncTaskUtils;
+import com.funyoung.quickrepair.utils.DialogUtils;
 import com.funyoung.quickrepair.utils.PerformanceUtils;
 
 import java.util.ArrayList;
@@ -64,19 +69,68 @@ public class PostDetailFragment extends BaseFragment {
         if (null == view) {
             return;
         }
-        View orderView = view.findViewById(R.id.tv_order);
-        if (null != orderView) {
+        initTakePostView(view);
+        initCommentView(view);
+    }
+    private void initCommentView(View view) {
+        if (null == view) {
+            return;
+        }
+
+        View subView = view.findViewById(R.id.comment_l);
+        if (null != subView) {
+            subView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    addComment();
+                }
+            });
+        }
+    }
+
+    private void addComment() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final EditText editText = new EditText(getActivity());
+        editText.setHint(R.string.post_comment_hint);
+        builder.setTitle(R.string.qp_post_write_comment);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String comment = editText.getText().toString();
+                if (TextUtils.isEmpty(comment)) {
+                    // todo : show too short text toas
+                } else {
+                    performCommentTask(comment);
+                }
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    // todo: show add comment ui.
+    private void performCommentTask(String comment) {
+        DialogUtils.showConfirmDialog(getActivity(), "Comment", comment, null);
+    }
+
+    private void initTakePostView(View view) {
+        if (null == view) {
+            return;
+        }
+
+        View subView = view.findViewById(R.id.tv_order);
+        if (null != subView) {
             if (DeployConfig.DEBUG_BOTH_USER_TYPE || isServiceProvider()) {
-                orderView.setVisibility(View.VISIBLE);
-                orderView.setOnClickListener(new View.OnClickListener() {
+                subView.setVisibility(View.VISIBLE);
+                subView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         takeThePost();
                     }
                 });
             } else {
-                orderView.setVisibility(View.GONE);
-                orderView.setOnClickListener(null);
+                subView.setVisibility(View.GONE);
+                subView.setOnClickListener(null);
             }
 
         }
