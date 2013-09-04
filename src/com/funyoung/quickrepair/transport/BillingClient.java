@@ -1,6 +1,7 @@
 package com.funyoung.quickrepair.transport;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.funyoung.quickrepair.api.ApiException;
 import com.funyoung.quickrepair.api.CommonUtils;
@@ -26,6 +27,7 @@ public final class BillingClient extends HttpRequestExecutor {
         private static final String LIST_BILL = "getBillList";
         private static final String ITEM_BILL = "getBillInfo";
         private static final String TAKE_BILL = "scrambleBill";
+        private static final String ADD_COMMENT = "comment";
     }
 
     public  String createBill(Post post) throws IOException, ApiException {
@@ -57,8 +59,21 @@ public final class BillingClient extends HttpRequestExecutor {
         }
 
         if (null != filter) {
-            // todo: intercept filter info into builder.
             builder.parameter(filter);
+        }
+        return doRequest(builder.create());
+    }
+
+    public String addComment(Post post, String comment) throws IOException, ApiException {
+        HttpRequestBuilder builder = new HttpRequestBuilder(HttpRequestBuilder.POST,
+                MODULE, Method.ADD_COMMENT);
+
+        if (null != post) {
+            builder.parameter(API_PARAM_POST_ID, post.postId);
+        }
+
+        if (!TextUtils.isEmpty(comment)) {
+            builder.parameter(API_PARAM_COMMENT_MESSAGE, comment);
         }
         return doRequest(builder.create());
     }
@@ -164,12 +179,12 @@ public final class BillingClient extends HttpRequestExecutor {
         return null;
     }
 
-    public static Post scrambleBill(Context context, Post post) {
+    public static boolean scrambleBill(Context context, Post post) {
         BillingClient ac = new BillingClient(context, SimpleHttpClient.get());
         Exception exception = null;
         try {
             String result = ac.scrambleBill(post);
-            return Post.parseResult(result);
+            return CommonUtils.parseBooleanResult(result);
         } catch (ClientProtocolException e) {
             exception = e;
             e.printStackTrace();
@@ -182,6 +197,27 @@ public final class BillingClient extends HttpRequestExecutor {
         } finally {
             postCheckApiException(context, exception);
         }
-        return null;
+        return false;
+    }
+
+    public static boolean addComment(Context context, Post post, String message) {
+        BillingClient ac = new BillingClient(context, SimpleHttpClient.get());
+        Exception exception = null;
+        try {
+            String result = ac.addComment(post, message);
+            return CommonUtils.parseBooleanResult(result);
+        } catch (ClientProtocolException e) {
+            exception = e;
+            e.printStackTrace();
+        } catch (IOException e) {
+            exception = e;
+            e.printStackTrace();
+        } catch (Exception e) {
+            exception = e;
+            e.printStackTrace();
+        } finally {
+            postCheckApiException(context, exception);
+        }
+        return false;
     }
 }

@@ -44,6 +44,7 @@ public class PostDetailFragment extends BaseFragment {
 
     private AsyncTask<Void, Void, String> mPreTask;
     private AsyncTask<Void, Void, String> mTakeTask;
+    private AsyncTask<Void, Void, String> mCommentTask;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -108,11 +109,6 @@ public class PostDetailFragment extends BaseFragment {
         dialog.show();
     }
 
-    // todo: show add comment ui.
-    private void performCommentTask(String comment) {
-        DialogUtils.showConfirmDialog(getActivity(), "Comment", comment, null);
-    }
-
     private void initTakePostView(View view) {
         if (null == view) {
             return;
@@ -156,8 +152,12 @@ public class PostDetailFragment extends BaseFragment {
         if (null != mTakeTask && mTakeTask.getStatus() == AsyncTask.Status.RUNNING) {
             mTakeTask.cancel(true);
         }
+        if (null != mCommentTask && mCommentTask.getStatus() == AsyncTask.Status.RUNNING) {
+            mCommentTask.cancel(true);
+        }
         mPreTask = null;
         mTakeTask = null;
+        mCommentTask = null;
     }
 
     private void performPreTask() {
@@ -205,11 +205,11 @@ public class PostDetailFragment extends BaseFragment {
     private void performTakeTask() {
         if (null == mTakeTask) {
             mTakeTask = new AsyncTask<Void, Void, String>() {
-                Post mResult;
+                boolean mResult;
                 long startTime;
                 @Override
                 protected void onPreExecute() {
-                    mResult = null;
+                    mResult = false;
                     startTime = System.currentTimeMillis();
                 }
 
@@ -229,9 +229,8 @@ public class PostDetailFragment extends BaseFragment {
                     final long diff = PerformanceUtils.showTimeDiff(startTime, System.currentTimeMillis());
                     PerformanceUtils.showToast(getActivity(), result, diff);
 
-                    if (mResult != null) {
+                    if (mResult) {
                         Toast.makeText(getActivity(), R.string.take_post_succeed, Toast.LENGTH_SHORT).show();
-                        mPost = mResult;
                         refreshUi();
                     } else {
                         Toast.makeText(getActivity(), R.string.take_post_fail, Toast.LENGTH_SHORT).show();
@@ -307,5 +306,46 @@ public class PostDetailFragment extends BaseFragment {
             return;
         }
         performTakeTask();
+    }
+
+    private void performCommentTask(final String comment) {
+        if (null == mCommentTask) {
+            mCommentTask = new AsyncTask<Void, Void, String>() {
+                boolean mResult;
+                long startTime;
+                @Override
+                protected void onPreExecute() {
+                    mResult = false;
+                    startTime = System.currentTimeMillis();
+                }
+
+                @Override
+                protected String doInBackground(Void... voids) {
+                    try {
+//                        final HashMap<String, String> filter = null;
+                        mResult = BillingClient.addComment(getActivity(), mPost, comment);
+                        return "addComment succeed by " + mPost.postId;
+                    } catch (Exception e) {
+                        return "addComment exception " + e.getMessage();
+                    }
+                }
+
+                @Override
+                protected void onPostExecute(String result) {
+                    final long diff = PerformanceUtils.showTimeDiff(startTime, System.currentTimeMillis());
+                    PerformanceUtils.showToast(getActivity(), result, diff);
+
+                    if (mResult) {
+                        Toast.makeText(getActivity(), R.string.add_comment_succeed, Toast.LENGTH_SHORT).show();
+                        refreshUi();
+                    } else {
+                        Toast.makeText(getActivity(), R.string.add_comment_fail, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            };
+        }
+        if (AsyncTaskUtils.isReadyToRun(mCommentTask)) {
+            mCommentTask.execute();
+        }
     }
 }
