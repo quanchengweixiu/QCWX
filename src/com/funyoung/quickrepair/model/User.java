@@ -11,6 +11,7 @@ import org.json.JSONObject;
  */
 public class User {
     public static final String KEY_UID = "uid";
+    public static final String KEY_NICK_NAME = "nickname";
     public static final String KEY_NAME = "name";
     public static final String KEY_AVATAR = "header";
 
@@ -100,6 +101,10 @@ public class User {
             long uid = jsonObject.optLong(KEY_UID);
             if (uid > 0) {
                 String nickName= jsonObject.optString(KEY_NAME);
+                if (TextUtils.isEmpty(nickName)) {
+                    nickName= jsonObject.optString(KEY_NICK_NAME);
+                }
+
                 String avatarUrl = jsonObject.optString(KEY_AVATAR);
                 String address = jsonObject.optString(KEY_ADDRESS);
                 String mobile = jsonObject.optString(KEY_USER_MOBILE);
@@ -128,6 +133,9 @@ public class User {
             long uid = Long.parseLong(jsonObject.optString(KEY_UID));
             if (uid > 0) {
                 String nickName= jsonObject.optString(KEY_NAME);
+                if (TextUtils.isEmpty(nickName)) {
+                    nickName= jsonObject.optString(KEY_NICK_NAME);
+                }
                 String avatarUrl = jsonObject.optString(KEY_AVATAR);
                 String address = jsonObject.optString(KEY_ADDRESS);
                 String mobile = jsonObject.optString(KEY_USER_MOBILE);

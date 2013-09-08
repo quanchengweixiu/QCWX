@@ -50,6 +50,7 @@ import com.funyoung.qcwx.R;
 import com.funyoung.quickrepair.fragment.BaseFragment;
 import com.funyoung.quickrepair.fragment.FragmentFactory;
 import com.funyoung.quickrepair.model.User;
+import com.funyoung.quickrepair.transport.HttpRequestExecutor;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.FeedbackAgent;
 
@@ -291,19 +292,19 @@ public class MainActivity extends FragmentActivity {
                 R.string.drawer_open, R.string.drawer_close);
         mDrawerToggle.syncState();
 
-//        if (savedInstanceState == null) {
-//            selectNavigateItem(1);
-//        }
+        if (savedInstanceState == null) {
+            selectNavigateItem(1);
+        }
     }
 
     protected void onStart() {
         super.onStart();
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                selectNavigateItem(1);
-            }
-        });
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                selectNavigateItem(1);
+//            }
+//        });
     }
 
     private Menu mOptionMenu;
@@ -591,19 +592,23 @@ public class MainActivity extends FragmentActivity {
                         JSONObject params = jsonContent
                                 .getJSONObject("response_params");
                         appid = params.getString("appid");
-                        channelid = params.getString("channel_id");
+                        channelid = params.getString(HttpRequestExecutor.API_PARAM_CHANNEL_ID);
                         userid = params.getString("user_id");
+
+                        SharedPreferences sp = PreferenceManager
+                                .getDefaultSharedPreferences(this);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putString("appid", appid);
+                        editor.putString(HttpRequestExecutor.API_PARAM_CHANNEL_ID, channelid);
+                        editor.putString("user_id", userid);
+                        editor.commit();
+                        if (null != mTask && mTask.getStatus() == AsyncTask.Status.RUNNING) {
+                            mTask.cancel(true);
+                        }
+                        (mTask = new CheckForUpdatesTask()).execute();
                     } catch (JSONException e) {
                         Log.e(Utils.TAG, "Parse bind json infos error: " + e);
                     }
-
-                    SharedPreferences sp = PreferenceManager
-                            .getDefaultSharedPreferences(this);
-                    SharedPreferences.Editor editor = sp.edit();
-                    editor.putString("appid", appid);
-                    editor.putString("channel_id", channelid);
-                    editor.putString("user_id", userid);
-                    editor.commit();
 
                     showChannelIds();
 

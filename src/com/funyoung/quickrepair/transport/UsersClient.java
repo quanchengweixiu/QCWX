@@ -166,7 +166,7 @@ public final class UsersClient extends HttpRequestExecutor {
         HttpRequestBase request = new HttpRequestBuilder(HttpRequestBuilder.POST,
                 MODULE, Method.INSERT_CHANNEL)
                 .parameter(API_PARAM_USER_ID, String.valueOf(uid))
-                .parameter("channel_id", channelId)
+                .parameter(HttpRequestExecutor.API_PARAM_CHANNEL_ID, channelId)
                 .parameter("user_id", clientId)
                 .create();
         return doRequest(request);

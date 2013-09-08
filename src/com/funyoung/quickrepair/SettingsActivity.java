@@ -25,6 +25,7 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 
 import com.baidu.android.common.logging.Log;
 import com.baidu.android.pushservice.PushConstants;
@@ -138,6 +139,14 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
                         .getDefaultSharedPreferences(context);
                 String channelId = sp.getString("channel_id", "");
                 String  clientId = sp.getString("user_id", "");
+                if (TextUtils.isEmpty(channelId) || TextUtils.isEmpty(clientId)) {
+                    Log.i(TAG, "checkAndUploadChannelInfo, skip with empty data: " +
+                            channelId + "/" + clientId);
+                    PushManager.startWork(context.getApplicationContext(),
+                            PushConstants.LOGIN_TYPE_API_KEY,
+                            Utils.getMetaValue(context, "api_key"));
+                    return;
+                }
                 if (!UsersClient.insertChannel(context, channelId, clientId, uid)) {
                     Log.e(TAG, "checkAndUploadChannelInfo, failed to upload, channelId = "
                             + channelId + ", clientId = " + clientId + ", uid = " + uid);
