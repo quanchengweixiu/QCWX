@@ -17,9 +17,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.funyoung.qcwx.R;
+import com.funyoung.quickrepair.model.Post;
 import com.funyoung.quickrepair.model.User;
+import com.funyoung.quickrepair.transport.BillingClient;
+import com.funyoung.quickrepair.transport.PhotoClient;
 import com.funyoung.quickrepair.transport.UsersClient;
 import com.funyoung.quickrepair.utils.AsyncTaskUtils;
 import com.funyoung.quickrepair.utils.DialogUtils;
@@ -202,6 +206,13 @@ public class ProfileFragment extends BaseFragment {
         if (null != mLoginTask && mLoginTask.getStatus() == AsyncTask.Status.RUNNING) {
             mLoginTask.cancel(true);
         }
+
+        super.onDestroy();
+        if (null != mPublishTask && mPublishTask.getStatus() == AsyncTask.Status.RUNNING) {
+            mPublishTask.cancel(true);
+        }
+        mPublishTask = null;
+
         mLoginTask = null;
     }
 
@@ -381,8 +392,53 @@ public class ProfileFragment extends BaseFragment {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void editProfileImage(File avatarFile) {
+    private AsyncTask<Void, Void, String> mPublishTask;
+    private void editProfileImage(final File avatarFile) {
+        if (null != mPublishTask && mPublishTask.getStatus() == AsyncTask.Status.RUNNING) {
+            mPublishTask.cancel(true);
+        }
 
+        if (null == mUser || mUser.getUid() <= 0) {
+            Log.e(TAG, "editProfileImage, skip without valid user.");
+            return;
+        }
+
+        if (null == mPublishTask) {
+            mPublishTask = new AsyncTask<Void, Void, String>() {
+                String mResult;
+                long startTime;
+                @Override
+                protected void onPreExecute() {
+                    mResult = null;
+                    startTime = System.currentTimeMillis();
+                }
+
+                @Override
+                protected String doInBackground(Void... voids) {
+                    try {
+                        mResult = PhotoClient.uploadAvatar(getActivity(), mUser, avatarFile);
+                        return "uploadAvatar succeed by " + mUser.getNickName();
+                    } catch (Exception e) {
+                        return "uploadAvatar exception " + e.getMessage();
+                    }
+                }
+
+                @Override
+                protected void onPostExecute(String result) {
+                    final long diff = PerformanceUtils.showTimeDiff(startTime, System.currentTimeMillis());
+                    PerformanceUtils.showToast(getActivity(), result, diff);
+
+                    if (!TextUtils.isEmpty(mResult)) {
+                        Toast.makeText(getActivity(), R.string.avatar_result_succeed, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getActivity(), R.string.avatar_result_fail, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            };
+        }
+        if (AsyncTaskUtils.isReadyToRun(mPublishTask)) {
+            mPublishTask.execute();
+        };
     }
 }
 
