@@ -24,11 +24,16 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.HttpEntityWrapper;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -70,6 +75,8 @@ public abstract class HttpRequestExecutor {
     public static final String API_PARAM_MODEL_AGE = "createyear";
 
     public static final String API_PARAM_CHANNEL_ID = "channel_id";
+
+    public static final String API_PARAM_FILE = "file";
 
     public final String API_VALUE_USER_TYPE_B = "0";
     public final String API_VALUE_USER_TYPE_A = "1";
@@ -355,19 +362,29 @@ public abstract class HttpRequestExecutor {
         public HttpRequestBase create(){
             String serverHost = getHostServer();
 //            String requestURL = serverHost + mCommand + "?" + encodeParameters(mParams);
+            final String fileName = mParams.remove(API_PARAM_FILE);
+
             String requestURL = serverHost + "?" + encodeParameters(mParams);
 
             BLog.d("Server request: " + requestURL);
                         
             HttpRequestBase request = null;
-            if(GET.equalsIgnoreCase(mMethod)){
+            if(GET.equalsIgnoreCase(mMethod) && null == fileName){
                 request = new HttpGet(requestURL);
-            } else if(POST.equalsIgnoreCase(mMethod)) {
+            } else if(POST.equalsIgnoreCase(mMethod) || null != fileName) {
                 request = new HttpPost(requestURL);
-                ((HttpPost)request).setEntity(mEntity);
+                if (null != fileName) {
+                    MultipartEntity multipart = new MultipartEntity();
+//                    multipart.addPart("method", new StringBody(mMethod));
+                    multipart.addPart(API_PARAM_FILE, new FileBody(new File(fileName)));
+//                    HttpClient client = new DefaultHttpClient();
+                    ((HttpPost)request).setEntity(multipart);
+                } else {
+                    ((HttpPost)request).setEntity(mEntity);
+                }
             }
             
-            if(request!=null){
+            if(request!=null) {
                 request.addHeader("User-Agent", "QCWX version:1");
                 return request;
             }

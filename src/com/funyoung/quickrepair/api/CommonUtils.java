@@ -3,6 +3,9 @@ package com.funyoung.quickrepair.api;
 import android.text.TextUtils;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 
 /**
@@ -50,5 +53,13 @@ public class CommonUtils {
         }
         // todo:
         return true;
+    }
+
+    public static String parseUrlResult(String result) throws JSONException {
+        if (!TextUtils.isEmpty(result)) {
+            JSONObject jsonObject = new JSONObject(result);
+            return jsonObject.optString("url");
+        }
+        return null;
     }
 }
