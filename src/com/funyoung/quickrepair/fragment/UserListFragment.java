@@ -29,9 +29,9 @@ import java.util.HashMap;
 import baidumapsdk.demo.DemoApplication;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 
-public class PostListFragment extends ListFragment implements
+public class UserListFragment extends ListFragment implements
         PullToRefreshAttacher.OnRefreshListener {
-    private static final String TAG = "PostListFragment";
+    private static final String TAG = "UserListFragment";
     private static final long SIMULATED_REFRESH_LENGTH = 5000;
 
     private User mUser;

@@ -24,6 +24,7 @@ public class FragmentFactory {
     private static final String FRAGMENT_POST = "FRAGMENT_POST";
     private static final String FRAGMENT_POST_LIST = "FRAGMENT_POST_LIST";
     private static final String FRAGMENT_POST_DETAIL = "FRAGMENT_POST_DETAIL";
+    private static final String FRAGMENT_USER_LIST = "FRAGMENT_USER_LIST";
 
     private String mCurrentFragment;
     public void gotoLoinFragment() {
@@ -109,6 +110,14 @@ public class FragmentFactory {
         return mCurrentFragment == FRAGMENT_DEFAULT;
     }
 
+    public boolean isLocationFragment() {
+        return mCurrentFragment == FRAGMENT_MAP;
+    }
+
+    public boolean isUserListFragment() {
+        return mCurrentFragment == FRAGMENT_USER_LIST;
+    }
+
     public void releaseCache() {
         Fragment fragment = getCurrentFragment();
         if (null != fragment && !fragment.isDetached()) {
@@ -130,6 +139,14 @@ public class FragmentFactory {
             gotoFragmentView(new PostListFragment(), FRAGMENT_POST_LIST,  FRAGMENT_DEFAULT);
         }
     }
+
+    public void gotoUserListView() {
+        if (mCurrentFragment != FRAGMENT_USER_LIST) {
+            mCurrentFragment = FRAGMENT_USER_LIST;
+            gotoFragmentView(new UserListFragment(), FRAGMENT_USER_LIST,  FRAGMENT_DEFAULT);
+        }
+    }
+
     private Fragment getCurrentFragment() {
         if (TextUtils.isEmpty(mCurrentFragment)) {
             return null;

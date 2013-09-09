@@ -321,10 +321,20 @@ public class MainActivity extends FragmentActivity {
     private void refreshOptionsMenu() {
         if (null != mOptionMenu) {
             boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+            MenuItem toggleItem = mOptionMenu.findItem(R.id.action_toggle);
             if (drawerOpen) {
                 mOptionMenu.findItem(R.id.action_websearch).setVisible(false);
-                mOptionMenu.findItem(R.id.action_toggle).setVisible(false);
+                toggleItem.setVisible(false);
             } else {
+                if (isLocationFragment()) {
+                    toggleItem.setIcon(R.drawable.ic_actionbar_list);
+                    toggleItem.setVisible(true);
+                } else if (isUserListFragment()) {
+                    toggleItem.setIcon(R.drawable.ic_actionbar_map);
+                    toggleItem.setVisible(true);
+                } else {
+                    toggleItem.setVisible(false);
+                }
 //                mOptionMenu.findItem(R.id.action_toggle).setIcon(isDefaultFragment() ?
 //                        R.drawable.ic_actionbar_map : R.drawable.ic_actionbar_list);
             }
@@ -383,10 +393,10 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void toggleView() {
-        if (isDefaultFragment()) {
+        if (isUserListFragment()) {
             gotoLocationFragment();
-        } else {
-            gotoDefaultView();
+        } else if (isLocationFragment()) {
+            gotoUserListView();
         }
     }
 
@@ -431,10 +441,15 @@ public class MainActivity extends FragmentActivity {
         }
         return mFactory;
     }
-    private boolean isDefaultFragment() {
-        return getFragmentFactory().isDefaultFragment();
+//    private boolean isDefaultFragment() {
+//        return getFragmentFactory().isDefaultFragment();
+//    }
+    private boolean isUserListFragment() {
+        return getFragmentFactory().isUserListFragment();
     }
-
+    private boolean isLocationFragment() {
+        return getFragmentFactory().isLocationFragment();
+    }
     private void gotoLoinFragment() {
         User user = ((DemoApplication)getApplication()).getLoginUser();
         if (null == user) {
@@ -456,6 +471,9 @@ public class MainActivity extends FragmentActivity {
         SettingsActivity.show(this);
     }
 
+    private void gotoUserListView() {
+        getFragmentFactory().gotoUserListView();
+    }
     private void gotoLocationFragment() {
         getFragmentFactory().gotoLocationFragment();
         refreshOptionsMenu();

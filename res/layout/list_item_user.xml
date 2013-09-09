@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:padding="10dip" >
+    <FrameLayout android:id="@+id/header"
+                  android:layout_alignParentLeft="true"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content">
+        <ImageView
+                android:id="@+id/img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/avatar_boy"
+                />
+        <ImageView
+                android:id="@+id/status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|bottom"
+                android:background="@drawable/avatar_boy"
+                />
+    </FrameLayout>
+    <RelativeLayout
+            android:id="@+id/body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/header"
+            android:paddingTop="10dip"
+            android:paddingBottom="10dip" >
+        <TextView
+                android:id="@+id/label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/img"
+                android:paddingLeft="10dip"
+                android:text="@string/post_item_title"
+                />
+        <TextView
+                android:id="@+id/description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/img"
+                android:layout_below="@id/label"
+                android:paddingLeft="10dip"
+                android:text="@string/post_item_description"
+                />
+
+    </RelativeLayout>
+    <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/body"
+            android:textColor="@android:color/darker_gray"
+            android:text="@string/post_item_time"
+            />
+    <TextView
+            android:id="@+id/price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/body"
+            android:textColor="@android:color/holo_blue_light"
+            android:text="@string/post_item_price"
+            />
+</RelativeLayout>
