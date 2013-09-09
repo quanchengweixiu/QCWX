@@ -48,6 +48,7 @@ import com.baidu.android.pushservice.PushConstants;
 import com.baidu.push.Utils;
 import com.funyoung.qcwx.R;
 import com.funyoung.quickrepair.fragment.BaseFragment;
+import com.funyoung.quickrepair.fragment.BaseFragment.FragmentSession;
 import com.funyoung.quickrepair.fragment.FragmentFactory;
 import com.funyoung.quickrepair.model.User;
 import com.funyoung.quickrepair.transport.HttpRequestExecutor;
@@ -320,14 +321,13 @@ public class MainActivity extends FragmentActivity {
     private void refreshOptionsMenu() {
         if (null != mOptionMenu) {
             boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-            mOptionMenu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
-            mOptionMenu.findItem(R.id.action_toggle).setVisible(!drawerOpen);
-        }
-    }
-    private void updateToggleMenuItem() {
-        if (null != mOptionMenu) {
-            mOptionMenu.findItem(R.id.action_toggle).setIcon(isDefaultFragment() ?
-                R.drawable.ic_actionbar_map : R.drawable.ic_actionbar_list);
+            if (drawerOpen) {
+                mOptionMenu.findItem(R.id.action_websearch).setVisible(false);
+                mOptionMenu.findItem(R.id.action_toggle).setVisible(false);
+            } else {
+//                mOptionMenu.findItem(R.id.action_toggle).setIcon(isDefaultFragment() ?
+//                        R.drawable.ic_actionbar_map : R.drawable.ic_actionbar_list);
+            }
         }
     }
 
@@ -421,7 +421,7 @@ public class MainActivity extends FragmentActivity {
             default:
                 return;
         }
-        updateToggleMenuItem();
+        refreshOptionsMenu();
     }
 
     private FragmentFactory mFactory;
@@ -458,7 +458,7 @@ public class MainActivity extends FragmentActivity {
 
     private void gotoLocationFragment() {
         getFragmentFactory().gotoLocationFragment();
-        updateToggleMenuItem();
+        refreshOptionsMenu();
     }
 
     @Override
@@ -490,7 +490,16 @@ public class MainActivity extends FragmentActivity {
     public static void invoke(Context context, BaseFragment.FragmentSession session,
                               Object o, Exception exception) {
         // todo: callback from login fragment after login close
+        if (!(context instanceof MainActivity)) {
+            return;
+        }
 
+        MainActivity activity = (MainActivity)context;
+        switch (session.mState) {
+            case FragmentSession.POSTED:
+                activity.gotoLocationFragment();
+                break;
+        }
     }
 
     private User getLoginUser() {
@@ -515,7 +524,7 @@ public class MainActivity extends FragmentActivity {
             setTitle(mainLabel + ">" + subLabel);
             getFragmentFactory().gotoPostFragment(user, mainId, subId);
         }
-        updateToggleMenuItem();
+        refreshOptionsMenu();
     }
 
     private CharSequence getNavigationTitle(int position) {

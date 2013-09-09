@@ -217,6 +217,7 @@ public class PostCreateFragment extends BaseFragment {
 
                     if (mResult) {
                         Toast.makeText(getActivity(), R.string.post_result_succeed, Toast.LENGTH_SHORT).show();
+                        invokeSession(FragmentSession.POSTED, null);
                     } else {
                         Toast.makeText(getActivity(), R.string.post_result_fail, Toast.LENGTH_SHORT).show();
                     }

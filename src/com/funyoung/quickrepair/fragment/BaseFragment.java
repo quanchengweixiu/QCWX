@@ -23,10 +23,12 @@ import baidumapsdk.demo.DemoApplication;
  */
 public class BaseFragment extends Fragment {
     public static class FragmentSession {
-        public static final int SPLASH = 0;
+        public static final int CATEGORY = 0;
         public static final int SELECTION = 1;
         public static final int LOGIN = 2;
         public static final int SETTINGS = 3;
+        public static final int POSTED = 4;
+        public static final int PROFILE = 5;
         public static final int FRAGMENT_COUNT = SETTINGS + 1;
 
         public int mState;

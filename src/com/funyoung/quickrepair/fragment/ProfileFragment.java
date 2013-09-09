@@ -298,7 +298,7 @@ public class ProfileFragment extends BaseFragment {
     private static final int REQUEST_CODE_CAMERA_WITH_DATA = 9001;
     private static final int REQUEST_CODE_PHOTO_PICKED_WITH_DATA = 9002;
     private File mCurrentPhotoFile;
-    private Bitmap photo ;
+    private Bitmap photo;
     private void performAvatarUpdateTask() {
         String[] items = new String[] {
                 getString(R.string.edit_profile_img_camera),
