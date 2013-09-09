@@ -54,7 +54,7 @@ public class UserListFragment extends ListFragment implements
 
         adapter = new SimpleAdapter(getActivity(),
                 itemData,
-                R.layout.list_item_post,
+                R.layout.list_item_user,
                 new String[] { "img", "label", "time", "description", "price", "status" },
                 new int[] { R.id.img, R.id.label, R.id.time, R.id.description, R.id.price, R.id.status });
         setListAdapter(adapter);
