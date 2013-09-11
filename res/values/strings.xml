@@ -100,4 +100,5 @@
     <string name="add_comment_fail">添加评论遇到错误</string>
     <string name="avatar_result_succeed">上传头像成功</string>
     <string name="avatar_result_fail">上传头像失败</string>
+    <string name="map">地图</string>
 </resources>

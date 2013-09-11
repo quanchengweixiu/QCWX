@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.baidu.mapapi.BMapManager;
 import com.baidu.mapapi.MKGeneralListener;
+import com.baidu.mapapi.map.LocationData;
 import com.baidu.mapapi.map.MKEvent;
 import com.funyoung.quickrepair.SettingsActivity;
 import com.funyoung.quickrepair.model.User;
@@ -59,6 +60,17 @@ public class DemoApplication extends Application {
              */
             mBMapManager.init(strKey,new MyGeneralListener());
         }
+    }
+
+    private LocationData mLocation;
+    public LocationData getLocation() {
+        if (null == mLocation) {
+            mLocation = new LocationData();
+        }
+        return mLocation;
+    }
+    public void setLocation(LocationData location) {
+        mLocation = location;
     }
 
 

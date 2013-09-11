@@ -428,6 +428,9 @@ public class MainActivity extends FragmentActivity {
             case 4: // Feedback
                 gotoFeedbackView();
                 break;
+            case 5: // map
+                gotoLocationFragment();
+                break;
             default:
                 return;
         }

@@ -18,6 +18,7 @@
         <item>@string/posts</item>
         <item>@string/settings</item>
         <item>@string/feedback</item>
+        <item>@string/map</item>
     </string-array>
     <string-array name="qp_navigation_title_login_array">
         <item>@string/personal_info</item>
@@ -25,6 +26,7 @@
         <item>@string/posts</item>
         <item>@string/settings</item>
         <item>@string/feedback</item>
+        <item>@string/map</item>
     </string-array>
 
     <string-array name="qp_category_label_array">

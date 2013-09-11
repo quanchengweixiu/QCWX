@@ -36,10 +36,10 @@ import baidumapsdk.demo.common.MyLocationMapView;
 /**
  * Created by yangfeng on 13-7-24.
  */
-public class LocationOverlayFragment extends Fragment {
+public class LocationOverlayFragment extends BaseFragment {
     // 定位相关
     LocationClient mLocClient;
-    LocationData myLocData = null;
+//    LocationData myLocData = null;
     public MyLocationListener myListener = new MyLocationListener();
 
     //定位图层
@@ -127,7 +127,8 @@ public class LocationOverlayFragment extends Fragment {
 
         //定位初始化
         mLocClient = new LocationClient(getActivity());
-        myLocData = new LocationData();
+
+        LocationData locationData = ((DemoApplication)getActivity().getApplication()).getLocation();
         mLocClient.registerLocationListener( myListener );
         LocationClientOption option = new LocationClientOption();
         option.setOpenGps(true);//打开gps
@@ -139,7 +140,7 @@ public class LocationOverlayFragment extends Fragment {
         //定位图层初始化
         myLocationOverlay = new LocationOverlay(mMapView);
         //设置定位数据
-        myLocationOverlay.setData(myLocData);
+        myLocationOverlay.setData(locationData);
         //添加定位图层
         mMapView.getOverlays().add(myLocationOverlay);
         myLocationOverlay.enableCompass();
@@ -193,13 +194,15 @@ public class LocationOverlayFragment extends Fragment {
         public void onReceiveLocation(BDLocation location) {
             if (location == null || isLocationClientStop)
                 return ;
-            myLocData.latitude = location.getLatitude();
-            myLocData.longitude = location.getLongitude();
+            LocationData locationData = ((DemoApplication)getActivity().getApplication()).getLocation();
+
+            locationData.latitude = location.getLatitude();
+            locationData.longitude = location.getLongitude();
             //如果不显示定位精度圈，将accuracy赋值为0即可
-            myLocData.accuracy = location.getRadius();
-            myLocData.direction = location.getDerect();
+            locationData.accuracy = location.getRadius();
+            locationData.direction = location.getDerect();
             //更新定位数据
-            myLocationOverlay.setData(myLocData);
+            myLocationOverlay.setData(locationData);
             //更新图层数据执行刷新后生效
             mMapView.refresh();
 
@@ -208,7 +211,8 @@ public class LocationOverlayFragment extends Fragment {
             //是手动触发请求或首次定位时，移动到定位点
             if (isRequest || isFirstLoc){
                 //移动地图到定位点
-                mMapController.animateTo(new GeoPoint((int)(myLocData.latitude* 1e6), (int)(myLocData.longitude *  1e6)));
+                mMapController.animateTo(new GeoPoint((int)(locationData.latitude* 1e6),
+                        (int)(locationData.longitude *  1e6)));
                 isRequest = false;
             }
             //首次定位完成
@@ -235,9 +239,11 @@ public class LocationOverlayFragment extends Fragment {
             //处理点击事件,弹出泡泡
             popupText.setBackgroundResource(R.drawable.popup);
             popupText.setText(R.string.popup_text_my_location);
+            LocationData locationData = ((DemoApplication)getActivity().getApplication()).getLocation();
+
             pop.showPopup(BMapUtil.getBitmapFromView(popupText),
-                    new GeoPoint((int)(myLocData.latitude*1e6),
-                            (int)(myLocData.longitude*1e6)),
+                    new GeoPoint((int)(locationData.latitude*1e6),
+                            (int)(locationData.longitude*1e6)),
                     8);
             return true;
         }

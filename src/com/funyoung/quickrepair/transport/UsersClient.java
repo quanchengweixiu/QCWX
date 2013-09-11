@@ -1,9 +1,13 @@
 package com.funyoung.quickrepair.transport;
 
+import android.app.Activity;
 import android.content.Context;
 
+import com.baidu.mapapi.map.LocationData;
 import com.funyoung.quickrepair.api.ApiException;
 import com.funyoung.quickrepair.api.CommonUtils;
+import com.funyoung.quickrepair.model.Post;
+import com.funyoung.quickrepair.model.ServiceProvider;
 import com.funyoung.quickrepair.model.User;
 
 import org.apache.http.client.ClientProtocolException;
@@ -11,6 +15,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpRequestBase;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public final class UsersClient extends HttpRequestExecutor {
     public UsersClient(Context context, HttpClient httpClient){
@@ -124,6 +130,7 @@ public final class UsersClient extends HttpRequestExecutor {
         private static final String LOGIN = "login";
         private static final String GET_PROFILE = "getUserInfo";
         private static final String INSERT_CHANNEL = "insertChannelInfo";
+        private static final String GET_PROVIDER_LIST = "getDisUsers";
     }
 
     public  String sendCode(String mobile) throws IOException, ApiException {
@@ -169,6 +176,18 @@ public final class UsersClient extends HttpRequestExecutor {
                 .parameter(HttpRequestExecutor.API_PARAM_CHANNEL_ID, channelId)
                 .parameter("user_id", clientId)
                 .create();
+        return doRequest(request);
+    }
+
+    public String getDisUsers(LocationData location, long disSlop, HashMap<String, String> filter)  throws IOException, ApiException {
+        HttpRequestBuilder builder = new HttpRequestBuilder(HttpRequestBuilder.POST,
+                MODULE, Method.GET_PROVIDER_LIST);
+        if (null != location) {
+            builder.parameter(API_PARAM_LATITUDE, String.valueOf(location.latitude));
+            builder.parameter(API_PARAM_LONGITUDE, String.valueOf(location.longitude));
+        }
+        builder.parameter("radius", String.valueOf(disSlop));
+        HttpRequestBase request = builder.create();
         return doRequest(request);
     }
 
@@ -254,6 +273,29 @@ public final class UsersClient extends HttpRequestExecutor {
             postCheckApiException(context, exception);
         }
         return false;
+    }
+
+    public static ArrayList<ServiceProvider> getDisUsers(Context context,
+                                                         LocationData locationData,
+                                                         long disSlop, HashMap<String, String> filter) {
+        UsersClient ac = new UsersClient(context, SimpleHttpClient.get());
+        Exception exception = null;
+        try {
+            String result = ac.getDisUsers(locationData, disSlop, filter);
+            return ServiceProvider.parseListResult(result);
+        } catch (ClientProtocolException e) {
+            exception = e;
+            e.printStackTrace();
+        } catch (IOException e) {
+            exception = e;
+            e.printStackTrace();
+        } catch (Exception e) {
+            exception = e;
+            e.printStackTrace();
+        } finally {
+            postCheckApiException(context, exception);
+        }
+        return null;
     }
 
 }

@@ -15,11 +15,12 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.mapapi.map.LocationData;
 import com.funyoung.qcwx.R;
 import com.funyoung.quickrepair.MainActivity;
-import com.funyoung.quickrepair.model.Post;
+import com.funyoung.quickrepair.model.ServiceProvider;
 import com.funyoung.quickrepair.model.User;
-import com.funyoung.quickrepair.transport.BillingClient;
+import com.funyoung.quickrepair.transport.UsersClient;
 import com.funyoung.quickrepair.utils.AsyncTaskUtils;
 import com.funyoung.quickrepair.utils.PerformanceUtils;
 
@@ -34,9 +35,10 @@ public class UserListFragment extends ListFragment implements
     private static final String TAG = "UserListFragment";
     private static final long SIMULATED_REFRESH_LENGTH = 5000;
 
-    private User mUser;
+    private long mDisSlop = 1000;     // a kilometer ?
+    private LocationData mLocation;
     SimpleAdapter adapter;
-    private ArrayList<Post> mPostList = new ArrayList<Post>();
+    private ArrayList<ServiceProvider> mUserList = new ArrayList<ServiceProvider>();
 
     private AsyncTask<Void, Void, String> mPreTask;
     ArrayList<HashMap<String, Object>> itemData = new ArrayList<HashMap<String, Object>>();
@@ -45,7 +47,7 @@ public class UserListFragment extends ListFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mUser = ((DemoApplication)getActivity().getApplication()).getLoginUser();
+        mLocation = ((DemoApplication)getActivity().getApplication()).getLocation();
         /**
          * Get ListView and give it an adapter to display the sample items
          */
@@ -102,7 +104,7 @@ public class UserListFragment extends ListFragment implements
     private void performPreTask() {
         if (null == mPreTask) {
             mPreTask = new AsyncTask<Void, Void, String>() {
-                ArrayList<Post> mResult;
+                ArrayList<ServiceProvider> mResult;
                 long startTime;
                 @Override
                 protected void onPreExecute() {
@@ -114,8 +116,9 @@ public class UserListFragment extends ListFragment implements
                 protected String doInBackground(Void... voids) {
                     try {
                         final HashMap<String, String> filter = null;
-                        mResult = BillingClient.listBill(getActivity(), mUser, filter);
-                        return "listBill succeed by " + getCurrentUserName();
+                                          mResult = UsersClient.getDisUsers(getActivity(),
+                                                  mLocation, mDisSlop, filter);
+                        return "listBill succeed by " + mLocation.toString();
                     } catch (Exception e) {
                         return "listBill exception " + e.getMessage();
                     }
@@ -126,10 +129,10 @@ public class UserListFragment extends ListFragment implements
                     final long diff = PerformanceUtils.showTimeDiff(startTime, System.currentTimeMillis());
                     PerformanceUtils.showToast(getActivity(), result, diff);
 
-                    mPostList.clear();
+                    mUserList.clear();
                     if (mResult != null && !mResult.isEmpty()) {
                         Toast.makeText(getActivity(), R.string.list_posts_succeed, Toast.LENGTH_SHORT).show();
-                        mPostList.addAll(mResult);
+                        mUserList.addAll(mResult);
                         refreshUi();
                     } else {
                         Toast.makeText(getActivity(), R.string.list_posts_fail, Toast.LENGTH_SHORT).show();
@@ -140,11 +143,6 @@ public class UserListFragment extends ListFragment implements
         if (AsyncTaskUtils.isReadyToRun(mPreTask)) {
             mPreTask.execute();
         }
-    }
-
-    private String getCurrentUserName() {
-        if (null == mUser) return "null";
-        return mUser.getNickName();
     }
 
     private String getContent(View hostView) {
@@ -160,18 +158,18 @@ public class UserListFragment extends ListFragment implements
     // new String[] { "img", "label", "time", "description", "price" },
     private void refreshUi() {
         itemData.clear();
-        if (null == mPostList || mPostList.isEmpty()) {
+        if (null == mUserList || mUserList.isEmpty()) {
             // fill in with debug data
         } else {
             HashMap<String, Object> item;
-            for (Post post : mPostList) {
+            for (ServiceProvider user : mUserList) {
                 item = new HashMap<String, Object>();
-                item.put("img", MainActivity.images[post.category]);
-                item.put("label", post.area);
-                item.put("time", formatDate(getActivity(), post.createTime));
-                item.put("description", post.description);
-                item.put("price", getString(R.string.post_item_price, post.getPrice()));
-                item.put("status", getString(R.string.post_item_status, post.getStatus()));
+                item.put("img", user.getAvatarUrl());
+                item.put("label", user.getNickName());
+                item.put("time", user.getGender());
+                item.put("description", user.getMobile());
+                item.put("price", user.getUid());
+                item.put("status", user.getMobile());
                 itemData.add(item);
             }
         }
@@ -213,13 +211,13 @@ public class UserListFragment extends ListFragment implements
     }
 
     public void onListItemClick(ListView l, View v, int position, long id) {
-        if (mPostList.isEmpty()) {
+        if (mUserList.isEmpty()) {
             Log.e(TAG, "onListItemClick, error with empty post list");
             return;
-        } else if (position < 0 || position >= mPostList.size()) {
+        } else if (position < 0 || position >= mUserList.size()) {
             Log.e(TAG, "onListItemClick, error with invalid position " + position);
         } else {
-            Post post = mPostList.get(position);
+            ServiceProvider post = mUserList.get(position);
             FragmentFactory.getInstance(getActivity()).gotoPostDetailFragment(post.toBundle());
         }
     }
