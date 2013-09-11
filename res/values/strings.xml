@@ -101,4 +101,5 @@
     <string name="avatar_result_succeed">上传头像成功</string>
     <string name="avatar_result_fail">上传头像失败</string>
     <string name="map">地图</string>
+    <string name="provider_list">周边的人</string>
 </resources>

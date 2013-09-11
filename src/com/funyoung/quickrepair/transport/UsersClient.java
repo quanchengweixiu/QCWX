@@ -183,8 +183,8 @@ public final class UsersClient extends HttpRequestExecutor {
         HttpRequestBuilder builder = new HttpRequestBuilder(HttpRequestBuilder.POST,
                 MODULE, Method.GET_PROVIDER_LIST);
         if (null != location) {
-            builder.parameter(API_PARAM_LATITUDE, String.valueOf(location.latitude));
-            builder.parameter(API_PARAM_LONGITUDE, String.valueOf(location.longitude));
+            builder.parameter(API_PARAM_LATITUDE, String.valueOf((int)(1e6 * location.latitude)));
+            builder.parameter(API_PARAM_LONGITUDE, String.valueOf((int)(1e6 * location.longitude)));
         }
         builder.parameter("radius", String.valueOf(disSlop));
         HttpRequestBase request = builder.create();

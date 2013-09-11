@@ -394,8 +394,10 @@ public class MainActivity extends FragmentActivity {
 
     private void toggleView() {
         if (isUserListFragment()) {
+            setTitle(getString(R.string.map));
             gotoLocationFragment();
         } else if (isLocationFragment()) {
+            setTitle(getString(R.string.provider_list));
             gotoUserListView();
         }
     }
@@ -476,6 +478,7 @@ public class MainActivity extends FragmentActivity {
 
     private void gotoUserListView() {
         getFragmentFactory().gotoUserListView();
+        refreshOptionsMenu();
     }
     private void gotoLocationFragment() {
         getFragmentFactory().gotoLocationFragment();
